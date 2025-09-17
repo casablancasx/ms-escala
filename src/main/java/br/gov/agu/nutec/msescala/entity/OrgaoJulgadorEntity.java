@@ -26,4 +26,9 @@ public class OrgaoJulgadorEntity {
     @OneToMany(mappedBy = "orgaoJulgador")
     private List<PautaEntity> pautas;
 
+    @ManyToOne
+    @JoinColumn(name = "uf_id")
+    private UfEntity uf;
+
+
 }
