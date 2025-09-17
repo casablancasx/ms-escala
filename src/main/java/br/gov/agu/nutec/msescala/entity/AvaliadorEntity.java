@@ -23,9 +23,11 @@ public class AvaliadorEntity {
 
     private boolean afastado;
 
+    private boolean escalaAutomatica;
+
     private Integer quantidadePautas;
 
-    private Integer quantiadeAudiencias;
+    private Integer quantidadeAudiencias;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "adicionado_por_id")
