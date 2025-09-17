@@ -46,7 +46,7 @@ public class PautistaEntity extends EntidadeSapiens {
     )
     private List<OrgaoJulgadorEntity> preferenciasOrgaosJulgadores = new ArrayList<>();
 
-    public double calcularCargaTrabalho() {
+    public int calcularCargaTrabalho() {
         final int PESO_PAUTA = 1;
         final int PESO_AUDIENCIA = 2;
         return (quantidadePautas * PESO_PAUTA) + (quantiadeAudiencias * PESO_AUDIENCIA);
