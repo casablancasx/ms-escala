@@ -21,7 +21,7 @@ public class AvaliadorEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer avaliadorId;
 
-    private boolean disponivel;
+    private boolean afastado;
 
     private Integer quantidadePautas;
 
@@ -33,6 +33,9 @@ public class AvaliadorEntity {
 
     @OneToMany(mappedBy = "avaliador", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AfastamentoEntity> afastamentos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "avaliador", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<EscalaEntity> escalas = new ArrayList<>();
 
 
 

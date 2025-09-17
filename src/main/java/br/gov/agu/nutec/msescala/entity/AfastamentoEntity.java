@@ -1,6 +1,6 @@
 package br.gov.agu.nutec.msescala.entity;
 
-import br.gov.agu.nutec.mspauta.enums.TipoAfastamento;
+import br.gov.agu.nutec.msescala.enums.TipoAfastamento;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -35,6 +35,9 @@ public class PautistaEntity extends EntidadeSapiens {
     @OneToMany(mappedBy = "pautista", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AfastamentoEntity> afastamentos = new ArrayList<>();
 
+    @OneToMany(mappedBy = "pautista", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<EscalaEntity> escalas = new ArrayList<>();
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "tb_pautista_preferencias_orgaos",
