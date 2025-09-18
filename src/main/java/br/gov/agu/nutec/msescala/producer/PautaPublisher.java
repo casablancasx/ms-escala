@@ -36,4 +36,16 @@ public class PautaPublisher {
             rabbitTemplate.convertAndSend(exchange, bindingKey, pauta);
         });
     }
+
+    public void iniciarEscalaPautistas(EscalaRequestDTO escalaRequestDTO) {
+
+        List<PautaEntity> pautas = pautaRepository.buscarPautasSemPautistaEscalados(
+                escalaRequestDTO.dataIncio(),
+                escalaRequestDTO.dataFim(),
+                escalaRequestDTO.uf());
+
+        pautas.parallelStream().forEach(pauta -> {
+            rabbitTemplate.convertAndSend(exchange, bindingKey, pauta);
+        });
+    }
 }

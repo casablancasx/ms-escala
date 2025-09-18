@@ -23,4 +23,10 @@ public class EscalaController {
         pautaPublisher.iniciarEscalaAvaliadores(escalaRequestDTO);
         return ResponseEntity.ok("Avaliadores escalados com sucesso!");
     }
+
+    @PostMapping("/pautistas")
+    public ResponseEntity<?> escalarPautistas(@RequestBody EscalaRequestDTO escalaRequestDTO) {
+        pautaPublisher.iniciarEscalaPautistas(escalaRequestDTO);
+        return ResponseEntity.ok("Pautistas escalados com sucesso!");
+    }
 }
