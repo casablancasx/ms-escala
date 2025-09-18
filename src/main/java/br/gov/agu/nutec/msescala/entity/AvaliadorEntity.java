@@ -41,9 +41,9 @@ public class AvaliadorEntity {
 
 
 
-    public double calcularCargaTrabalho() {
+    public int calcularCargaTrabalho() {
         final int PESO_PAUTA = 1;
         final int PESO_AUDIENCIA = 2;
-        return (quantidadePautas * PESO_PAUTA) + (quantiadeAudiencias * PESO_AUDIENCIA);
+        return (quantidadePautas * PESO_PAUTA) + (quantidadeAudiencias * PESO_AUDIENCIA);
     }
 }

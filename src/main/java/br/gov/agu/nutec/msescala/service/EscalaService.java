@@ -1,14 +1,16 @@
 package br.gov.agu.nutec.msescala.service;
 
-import br.gov.agu.nutec.msescala.dto.EscalaRequestDTO;
+import br.gov.agu.nutec.msescala.entity.AvaliadorEntity;
+import br.gov.agu.nutec.msescala.entity.EscalaEntity;
 import br.gov.agu.nutec.msescala.entity.PautaEntity;
-import br.gov.agu.nutec.msescala.enums.Uf;
-import br.gov.agu.nutec.msescala.repository.PautaRepository;
+import br.gov.agu.nutec.msescala.repository.AvaliadorRepository;
+import br.gov.agu.nutec.msescala.repository.EscalaRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -16,27 +18,31 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EscalaService {
 
-    private final PautaRepository pautaRepository;
-    private final RabbitTemplate rabbitTemplate;
-
-    @Value("rabbitmq.exchange.pauta-escalar-pendente")
-    private String exchange;
-
-    @Value("rabbitmq.bindingkey.pauta-escalar")
-    private String bindingKey;
+    private final AvaliadorRepository avaliadorRepository;
+    private final EscalaRepository escalaRepository;
 
 
+    @Transactional
+    public void escalarAvaliadores(PautaEntity pauta) {
 
-    public void iniciarEscalaAvaliadores(EscalaRequestDTO request) {
+        List<AvaliadorEntity> avaliadores = avaliadorRepository.buscarAvaliadoresDisponveis(pauta.getData());
+        var avaliadorSelecionado = selecionarAvaliador(avaliadores);
 
-        List<PautaEntity> pautas = pautaRepository.buscarPautasSemAvaliadoresEscalados(
-                request.dataIncio(),
-                request.dataFim(),
-                request.uf());
-
-        pautas.parallelStream().forEach(pauta -> {
-            rabbitTemplate.convertAndSend(exchange, bindingKey, pauta);
-        });
-
+        escalarAvaliadorNaPauta(avaliadorSelecionado, pauta);
     }
+
+    private void escalarAvaliadorNaPauta(AvaliadorEntity avaliador, PautaEntity pauta) {
+        EscalaEntity escala = new EscalaEntity();
+        escala.setAvaliador(avaliador);
+        escala.setPauta(pauta);
+        escala.setCriadoEm(LocalDateTime.now());
+        escalaRepository.save(escala);
+    }
+
+    private AvaliadorEntity selecionarAvaliador(List<AvaliadorEntity> avaliadores) {
+        return avaliadores.stream()
+                .min(Comparator.comparingInt(AvaliadorEntity::calcularCargaTrabalho))
+                .orElseThrow(() -> new RuntimeException("Nenhum avaliador disponivel para escala"));
+    }
+
 }
