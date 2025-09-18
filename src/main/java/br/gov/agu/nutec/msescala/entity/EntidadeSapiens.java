@@ -1,5 +1,6 @@
 package br.gov.agu.nutec.msescala.entity;
 
+import br.gov.agu.nutec.msescala.enums.StatusCadastro;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AvaliadorEntity {
+public class AvaliadorEntity extends EntidadeSapiens{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

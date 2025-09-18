@@ -1,12 +1,11 @@
 package br.gov.agu.nutec.msescala.entity;
 
+import br.gov.agu.nutec.msescala.enums.StatusCadastro;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Entity
 @Table(name = "tb_audiencias")
@@ -34,7 +33,11 @@ public class AudienciaEntity {
     @JoinColumn(name = "pauta_id")
     private PautaEntity pauta;
 
-    private boolean cadastradaAvaliador;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_cadastro_avaliador")
+    private StatusCadastro statusCadastroAvaliador;
 
-    private boolean cadastradaPautista;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_cadastro_pautista")
+    private StatusCadastro statusCadastroPautista;
 }
