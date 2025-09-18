@@ -13,11 +13,8 @@ public class EscalaListener {
     private final EscalaService escalaService;
 
 
-
-
-
     @RabbitListener(queues = "${rabbitmq.queue.pauta-ms-escalar}")
     public void escalarAvaliadores(PautaEntity pauta) {
-        // L
+        escalaService.escalarAvaliadores(pauta);
     }
 }
