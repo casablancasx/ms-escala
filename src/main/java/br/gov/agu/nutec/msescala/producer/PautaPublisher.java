@@ -14,15 +14,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PautaPublisher {
 
-
     private final PautaRepository pautaRepository;
     private final RabbitTemplate rabbitTemplate;
 
-    @Value("rabbitmq.exchange.pauta-escalar-pendente")
+    @Value("${rabbitmq.exchange.pauta-escalar-pendente}")
     private String exchange;
 
-    @Value("rabbitmq.bindingkey.pauta-escalar")
-    private String bindingKey;
+    @Value("${rabbitmq.bindingkey.avaliador}")
+    private String bindingKeyAvaliador;
+    
+    @Value("${rabbitmq.bindingkey.pautista}")
+    private String bindingKeyPautista;
 
 
     public void iniciarEscalaAvaliadores(EscalaRequestDTO request) {
@@ -33,7 +35,7 @@ public class PautaPublisher {
                 request.uf());
 
         pautas.parallelStream().forEach(pauta -> {
-            rabbitTemplate.convertAndSend(exchange, bindingKey, pauta);
+            rabbitTemplate.convertAndSend(exchange, bindingKeyAvaliador, pauta);
         });
     }
 
@@ -45,7 +47,7 @@ public class PautaPublisher {
                 escalaRequestDTO.uf());
 
         pautas.parallelStream().forEach(pauta -> {
-            rabbitTemplate.convertAndSend(exchange, bindingKey, pauta);
+            rabbitTemplate.convertAndSend(exchange, bindingKeyPautista, pauta);
         });
     }
 }

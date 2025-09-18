@@ -10,6 +10,7 @@ import static br.gov.agu.nutec.msescala.enums.StatusCadastro.ERRO;
 import static br.gov.agu.nutec.msescala.enums.StatusCadastro.SUCESSO;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,10 @@ import java.util.Map;
 public class CadastrarTarefaService {
 
     private final AudienciaRepository audienciaRepository;
-
     private final WebClient webClient;
+    
+    @Value("${sapiens.token:defaultToken}")
+    private String token;
 
 
     public void cadastrarTarefaSapiens(AudienciaEntity audiencia, EntidadeSapiens entidadeSapiens, String token) {
@@ -32,6 +35,10 @@ public class CadastrarTarefaService {
         StatusCadastro  statusCadastro = (processoId == null || !statusCodeCaastroTarefa.is2xxSuccessful()) ? ERRO : SUCESSO;
         atualizarStatus(audiencia, entidadeSapiens, statusCadastro);
         audienciaRepository.save(audiencia);
+    }
+    
+    public void cadastrarTarefaSapiens(AudienciaEntity audiencia, EntidadeSapiens entidadeSapiens) {
+        cadastrarTarefaSapiens(audiencia, entidadeSapiens, token);
     }
 
 
