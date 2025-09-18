@@ -23,7 +23,7 @@ public class EscalaService {
 
 
     @Transactional
-    public void escalarAvaliadores(PautaEntity pauta) {
+    public void escalarAvaliadores(final PautaEntity pauta) {
 
         List<AvaliadorEntity> avaliadores = avaliadorRepository.buscarAvaliadoresDisponveis(pauta.getData());
         var avaliadorSelecionado = selecionarAvaliador(avaliadores);
@@ -31,7 +31,7 @@ public class EscalaService {
         escalarAvaliadorNaPauta(avaliadorSelecionado, pauta);
     }
 
-    private void escalarAvaliadorNaPauta(AvaliadorEntity avaliador, PautaEntity pauta) {
+    private void escalarAvaliadorNaPauta(final AvaliadorEntity avaliador,final PautaEntity pauta) {
         EscalaEntity escala = new EscalaEntity();
         escala.setAvaliador(avaliador);
         escala.setPauta(pauta);
@@ -39,7 +39,7 @@ public class EscalaService {
         escalaRepository.save(escala);
     }
 
-    private AvaliadorEntity selecionarAvaliador(List<AvaliadorEntity> avaliadores) {
+    private AvaliadorEntity selecionarAvaliador(final List<AvaliadorEntity> avaliadores) {
         return avaliadores.stream()
                 .min(Comparator.comparingInt(AvaliadorEntity::calcularCargaTrabalho))
                 .orElseThrow(() -> new RuntimeException("Nenhum avaliador disponivel para escala"));
