@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface AvaliadorRepository extends JpaRepository<AvaliadorRepository, Long> {
+public interface AvaliadorRepository extends JpaRepository<AvaliadorEntity, Long> {
 
     @Query("SELECT a FROM AvaliadorEntity a " +
            "WHERE a.afastado = false " +
