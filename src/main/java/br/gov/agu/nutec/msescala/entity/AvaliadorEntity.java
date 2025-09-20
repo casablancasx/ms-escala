@@ -19,15 +19,15 @@ public class AvaliadorEntity extends EntidadeSapiens{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer avaliadorId;
+    private Long avaliadorId;
 
     private boolean afastado;
 
     private boolean escalaAutomatica;
 
-    private Integer quantidadePautas;
+    private Integer quantidadePautas = 0;
 
-    private Integer quantidadeAudiencias;
+    private Integer quantidadeAudiencias = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "adicionado_por_id")

@@ -1,6 +1,8 @@
 package br.gov.agu.nutec.msescala.entity;
 
 import br.gov.agu.nutec.msescala.enums.StatusCadastro;
+import jakarta.persistence.Entity;
+import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,9 +14,10 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@MappedSuperclass
 public abstract class EntidadeSapiens {
 
-    private Integer sapiensId;
+    private Long sapiensId;
 
     private String nome;
 
@@ -22,9 +25,9 @@ public abstract class EntidadeSapiens {
 
     private String email;
 
-    private Integer setorId;
+    private Long setorId;
 
-    private Integer unidadeId;
+    private Long unidadeId;
 
     private LocalDateTime criadoEm;
 
