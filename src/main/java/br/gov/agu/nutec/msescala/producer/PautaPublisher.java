@@ -1,6 +1,6 @@
 package br.gov.agu.nutec.msescala.producer;
 
-import br.gov.agu.nutec.msescala.dto.EscalaRequestDTO;
+import br.gov.agu.nutec.msescala.dto.request.EscalaRequestDTO;
 import br.gov.agu.nutec.msescala.entity.PautaEntity;
 import br.gov.agu.nutec.msescala.repository.PautaRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class PautaPublisher {
     public void iniciarEscalaAvaliadores(EscalaRequestDTO request) {
 
         List<PautaEntity> pautas = pautaRepository.buscarPautasSemAvaliadoresEscalados(
-                request.dataIncio(),
+                request.dataInicio(),
                 request.dataFim(),
                 request.uf());
 
@@ -42,7 +42,7 @@ public class PautaPublisher {
     public void iniciarEscalaPautistas(EscalaRequestDTO escalaRequestDTO) {
 
         List<PautaEntity> pautas = pautaRepository.buscarPautasSemPautistaEscalados(
-                escalaRequestDTO.dataIncio(),
+                escalaRequestDTO.dataInicio(),
                 escalaRequestDTO.dataFim(),
                 escalaRequestDTO.uf());
 

@@ -1,6 +1,6 @@
 package br.gov.agu.nutec.msescala.controller;
 
-import br.gov.agu.nutec.msescala.dto.EscalaRequestDTO;
+import br.gov.agu.nutec.msescala.dto.request.EscalaRequestDTO;
 import br.gov.agu.nutec.msescala.producer.PautaPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,7 @@
 package br.gov.agu.nutec.msescala.repository;
 
 import br.gov.agu.nutec.msescala.entity.PautaEntity;
+import br.gov.agu.nutec.msescala.enums.Uf;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,7 +20,7 @@ public interface PautaRepository extends JpaRepository<PautaEntity, Long> {
      List<PautaEntity> buscarPautasSemAvaliadoresEscalados(
         @Param("dataInicio") LocalDate dataInicio,
         @Param("dataFim") LocalDate dataFim,
-        @Param("uf") String uf);
+        @Param("uf") Uf uf);
 
      @Query("SELECT p FROM PautaEntity p WHERE " +
              "p.data BETWEEN :dataInicio AND :dataFim AND " +
@@ -29,6 +30,6 @@ public interface PautaRepository extends JpaRepository<PautaEntity, Long> {
      List<PautaEntity> buscarPautasSemPautistaEscalados(
              @Param("dataInicio") LocalDate dataInicio,
              @Param("dataFim") LocalDate dataFim,
-             @Param("uf") String uf);
+             @Param("uf") Uf uf);
 
 }
