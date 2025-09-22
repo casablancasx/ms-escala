@@ -3,6 +3,7 @@ package br.gov.agu.nutec.msescala.entity;
 
 import br.gov.agu.nutec.msescala.enums.StatusAnaliseComparecimento;
 import br.gov.agu.nutec.msescala.enums.StatusEscalaPauta;
+import br.gov.agu.nutec.msescala.enums.Turno;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class PautaEntity {
 
     private LocalDate data;
 
-    private String turno;
+    private Turno turno;
 
     @Column(name = "status_escala_avaliador")
     @Enumerated(EnumType.STRING)
