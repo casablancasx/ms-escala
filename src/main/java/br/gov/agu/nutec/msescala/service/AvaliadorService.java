@@ -39,8 +39,10 @@ public class AvaliadorService {
 
         AvaliadorEntity avaliador = avaliadorMapper.mapToEntity(request);
         avaliador.setAdicionadoPor(user);
+        avaliadorRepository.save(avaliador);
+        var response = avaliadorMapper.mapToResponseDTO(avaliador);
 
-        return avaliadorMapper.mapToResponseDTO(avaliadorRepository.save(avaliador));
+        return response;
     }
 
 

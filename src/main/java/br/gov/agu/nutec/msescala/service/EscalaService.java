@@ -6,6 +6,7 @@ import br.gov.agu.nutec.msescala.repository.AvaliadorRepository;
 import br.gov.agu.nutec.msescala.repository.EscalaRepository;
 import br.gov.agu.nutec.msescala.repository.PautaRepository;
 import br.gov.agu.nutec.msescala.repository.PautistaRepository;
+import static br.gov.agu.nutec.msescala.enums.StatusEscalaPauta.ESCALADA;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,8 +35,10 @@ public class EscalaService {
 
         PautaEntity pauta = buscarPautaPorId(pautaMessage.pautaId());
         List<AvaliadorEntity> avaliadores = avaliadorRepository.buscarAvaliadoresDisponveis(pauta.getData());
+
         var avaliadorSelecionado = selecionarAvaliador(avaliadores);
         escalarAvaliadorNaPauta(avaliadorSelecionado, pauta);
+
 
         for (AudienciaEntity audiencia : pauta.getAudiencias()) {
             cadastrarTarefaService.cadastrarTarefaSapiens(audiencia,pauta, avaliadorSelecionado,pautaMessage);
@@ -53,6 +56,9 @@ public class EscalaService {
         escala.setPauta(pauta);
         escala.setCriadoEm(LocalDateTime.now());
         escalaRepository.save(escala);
+
+        pauta.setStatusEscalaAvaliador(ESCALADA);
+        pautaRepository.save(pauta);
     }
 
     private AvaliadorEntity selecionarAvaliador(final List<AvaliadorEntity> avaliadores) {

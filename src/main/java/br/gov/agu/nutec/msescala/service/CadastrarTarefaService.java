@@ -14,6 +14,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,8 +33,8 @@ public class CadastrarTarefaService {
 
     public void cadastrarTarefaSapiens(AudienciaEntity audiencia, PautaEntity pauta, EntidadeSapiens entidadeSapiens, PautaMessage pautaMessage) {
         Integer processoId = buscarProcessoIdPorAudiencia(audiencia.getNumeroProcesso(), pautaMessage.token());
-        var statusCodeCaastroTarefa = cadastrarAudienciaParaUsuarioSapiens(processoId,pautaMessage.setorOrigemId(),pautaMessage.especieTarefaId(), entidadeSapiens,pauta, pautaMessage.token());
-        StatusCadastro  statusCadastro = (processoId == null || !statusCodeCaastroTarefa.is2xxSuccessful()) ? ERRO : SUCESSO;
+        var statusCodeCadastro = cadastrarAudienciaParaUsuarioSapiens(processoId,pautaMessage.setorOrigemId(),pautaMessage.especieTarefaId(), entidadeSapiens,pauta, pautaMessage.token());
+        StatusCadastro  statusCadastro = (processoId == null || !statusCodeCadastro.is2xxSuccessful()) ? ERRO : SUCESSO;
         atualizarStatus(audiencia, entidadeSapiens, statusCadastro);
         audienciaRepository.save(audiencia);
     }
@@ -83,9 +85,8 @@ public class CadastrarTarefaService {
         body.put("postIt", null);
         body.put("urgente", null);
         body.put("observacao", String.format("%s - %s", pauta.getData().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")), pauta.getOrgaoJulgador().getNome()));        body.put("localEvento", null);
-        body.put("dataHoraInicioPrazo", LocalDateTime.now());
-        body.put("dataHoraFinalPrazo", pauta.getData().atTime(23, 59, 59).toString());
-        body.put("dataHoraLeitura", null);
+        body.put("dataHoraInicioPrazo", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        body.put("dataHoraFinalPrazo", pauta.getData().atTime(20, 0, 0).format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME));        body.put("dataHoraLeitura", null);
         body.put("dataHoraDistribuicao", null);
         body.put("processo", processoId);
         body.put("especieTarefa", especieTarefaId); // Espécie Tarefa
@@ -94,6 +95,7 @@ public class CadastrarTarefaService {
         body.put("setorResponsavel", entidadeSapiens.getSetorId());
         body.put("distribuicaoAutomatica", false);
         body.put("folder", null);
+        body.put("prazoDias", ChronoUnit.DAYS.between(LocalDateTime.now(), pauta.getData().atTime(23, 59, 59)));
         body.put("isRelevante", null);
         body.put("locked", null);
         body.put("diasUteis", null);
