@@ -1,9 +1,11 @@
 package br.gov.agu.nutec.msescala.service;
 
+import br.gov.agu.nutec.msescala.dto.message.PautaMessage;
 import br.gov.agu.nutec.msescala.entity.*;
 import br.gov.agu.nutec.msescala.enums.StatusCadastro;
 import br.gov.agu.nutec.msescala.repository.AudienciaRepository;
 import com.fasterxml.jackson.databind.JsonNode;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +29,9 @@ public class CadastrarTarefaService {
     
 
 
-    public void cadastrarTarefaSapiens(AudienciaEntity audiencia, EntidadeSapiens entidadeSapiens, String token) {
-        Integer processoId = buscarProcessoIdPorAudiencia(audiencia.getNumeroProcesso(), token);
-        var statusCodeCaastroTarefa = cadastrarAudienciaParaUsuarioSapiens(processoId, entidadeSapiens, token);
+    public void cadastrarTarefaSapiens(AudienciaEntity audiencia, PautaEntity pauta, EntidadeSapiens entidadeSapiens, PautaMessage pautaMessage) {
+        Integer processoId = buscarProcessoIdPorAudiencia(audiencia.getNumeroProcesso(), pautaMessage.token());
+        var statusCodeCaastroTarefa = cadastrarAudienciaParaUsuarioSapiens(processoId,pautaMessage.setorOrigemId(),pautaMessage.especieTarefaId(), entidadeSapiens,pauta, pautaMessage.token());
         StatusCadastro  statusCadastro = (processoId == null || !statusCodeCaastroTarefa.is2xxSuccessful()) ? ERRO : SUCESSO;
         atualizarStatus(audiencia, entidadeSapiens, statusCadastro);
         audienciaRepository.save(audiencia);

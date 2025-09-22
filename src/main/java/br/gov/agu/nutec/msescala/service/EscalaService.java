@@ -38,7 +38,7 @@ public class EscalaService {
         escalarAvaliadorNaPauta(avaliadorSelecionado, pauta);
 
         for (AudienciaEntity audiencia : pauta.getAudiencias()) {
-            cadastrarTarefaService.cadastrarTarefaSapiens(audiencia, avaliadorSelecionado,pautaMessage.token());
+            cadastrarTarefaService.cadastrarTarefaSapiens(audiencia,pauta, avaliadorSelecionado,pautaMessage);
         }
     }
 
