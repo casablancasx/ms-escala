@@ -36,7 +36,7 @@ public class PautaPublisher {
                 request.uf());
 
         pautas.parallelStream().forEach(pauta -> {
-            rabbitTemplate.convertAndSend(exchange, bindingKeyAvaliador, new PautaMessage("Pauta sem avaliador", pauta.getPautaId(), token));
+            rabbitTemplate.convertAndSend(exchange, bindingKeyAvaliador, new PautaMessage("Pauta para escala de avaliador", pauta.getPautaId(),request.setorOrigemId(),request.especieTarefaId(), token));
         });
     }
 
