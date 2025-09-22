@@ -2,6 +2,7 @@ package br.gov.agu.nutec.msescala.entity;
 
 
 import br.gov.agu.nutec.msescala.enums.StatusAnaliseComparecimento;
+import br.gov.agu.nutec.msescala.enums.StatusEscalaPauta;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +27,15 @@ public class PautaEntity {
     private LocalDate data;
 
     private String turno;
+
+    @Column(name = "status_escala_avaliador")
+    @Enumerated(EnumType.STRING)
+    private StatusEscalaPauta statusEscalaAvaliador;
+
+    @Column(name = "status_escala_pautista")
+    @Enumerated(EnumType.STRING)
+    private StatusEscalaPauta statusEscalaPautista;
+
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status_analise_comparecimento")
