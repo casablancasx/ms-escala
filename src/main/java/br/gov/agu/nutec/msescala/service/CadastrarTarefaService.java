@@ -15,7 +15,10 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriUtils;
 
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Map;
 
 @Service
@@ -25,8 +28,6 @@ public class CadastrarTarefaService {
     private final AudienciaRepository audienciaRepository;
     private final WebClient webClient;
     
-    @Value("${sapiens.token:defaultToken}")
-    private String token;
 
 
     public void cadastrarTarefaSapiens(AudienciaEntity audiencia, EntidadeSapiens entidadeSapiens, String token) {
@@ -36,28 +37,34 @@ public class CadastrarTarefaService {
         atualizarStatus(audiencia, entidadeSapiens, statusCadastro);
         audienciaRepository.save(audiencia);
     }
-    
-    public void cadastrarTarefaSapiens(AudienciaEntity audiencia, EntidadeSapiens entidadeSapiens) {
-        cadastrarTarefaSapiens(audiencia, entidadeSapiens, token);
-    }
+
 
 
     private Integer buscarProcessoIdPorAudiencia(String numeroProcesso, String token) {
-
         String numeroProcessoDesformatado = numeroProcesso.replaceAll("[\\.\\-]", "");
-        JsonNode response = webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/v1/administrativo/processo")
-                        .queryParam("where", "{\"andX\":[{\"vinculacoesProcessosJudiciaisProcessos.processoJudicial.numero\":\"like:" + numeroProcessoDesformatado + "\"}]}")
-                        .build())
-                .header("Authorization", "Bearer " + token)
-                .retrieve()
-                .bodyToMono(JsonNode.class)
-                .block();
 
-        assert response != null;
-        return extrairProcessoIdFromJsonNode(response);
+        String where = String.format(
+                "{\"vinculacoesProcessosJudiciaisProcessos.processoJudicial.numero\":\"like:%s\"}",
+                numeroProcessoDesformatado
+        );
+
+        String whereEncoded = UriUtils.encode(where, StandardCharsets.UTF_8);
+        try {
+            String uri = "/v1/administrativo/processo?where=" + whereEncoded + "&limit=1&offset=0";
+            
+            JsonNode response = webClient.get()
+                    .uri(uri)
+                    .header("Authorization", "Bearer " + token)
+                    .retrieve()
+                    .bodyToMono(JsonNode.class)
+                    .block(Duration.ofSeconds(30));
+            return extrairProcessoIdFromJsonNode(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
+
 
     private HttpStatusCode cadastrarAudienciaParaUsuarioSapiens(Integer processoId, EntidadeSapiens entidadeSapiens, String token) {
         var body = Map.ofEntries(

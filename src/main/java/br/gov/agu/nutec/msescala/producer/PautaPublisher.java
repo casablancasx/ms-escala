@@ -1,5 +1,6 @@
 package br.gov.agu.nutec.msescala.producer;
 
+import br.gov.agu.nutec.msescala.dto.message.PautaMessage;
 import br.gov.agu.nutec.msescala.dto.request.EscalaRequestDTO;
 import br.gov.agu.nutec.msescala.entity.PautaEntity;
 import br.gov.agu.nutec.msescala.repository.PautaRepository;
@@ -27,7 +28,7 @@ public class PautaPublisher {
     private String bindingKeyPautista;
 
 
-    public void iniciarEscalaAvaliadores(EscalaRequestDTO request) {
+    public void iniciarEscalaAvaliadores(EscalaRequestDTO request, String token) {
 
         List<PautaEntity> pautas = pautaRepository.buscarPautasSemAvaliadoresEscalados(
                 request.dataInicio(),
@@ -35,7 +36,7 @@ public class PautaPublisher {
                 request.uf());
 
         pautas.parallelStream().forEach(pauta -> {
-            rabbitTemplate.convertAndSend(exchange, bindingKeyAvaliador, pauta);
+            rabbitTemplate.convertAndSend(exchange, bindingKeyAvaliador, new PautaMessage("Pauta sem avaliador", pauta.getPautaId(), token));
         });
     }
 

@@ -10,7 +10,7 @@ public class WebClientConfig {
 
     @Value("${sapiens.url}")
     private String baseUrl;
-
+    
     @Bean
     public WebClient webClient(){
         return WebClient.builder().baseUrl(baseUrl).build();

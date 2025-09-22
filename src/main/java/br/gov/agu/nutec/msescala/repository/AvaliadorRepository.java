@@ -13,12 +13,7 @@ import java.util.List;
 public interface AvaliadorRepository extends JpaRepository<AvaliadorEntity, Long> {
 
     @Query("SELECT a FROM AvaliadorEntity a " +
-           "WHERE a.afastado = false " +
-           "AND a.escalaAutomatica = true " +
-           "AND NOT EXISTS (" +
-           "    SELECT e FROM EscalaEntity e " +
-           "    WHERE e.avaliador = a " +
-           "    AND e.pauta.data = :data" +
-           ")")
+            "WHERE a.afastado = false " +
+            "AND a.escalaAutomatica = true")
     List<AvaliadorEntity> buscarAvaliadoresDisponveis(@Param("data") LocalDate data);
 }

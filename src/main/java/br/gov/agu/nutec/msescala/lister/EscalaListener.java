@@ -1,5 +1,6 @@
 package br.gov.agu.nutec.msescala.lister;
 
+import br.gov.agu.nutec.msescala.dto.message.PautaMessage;
 import br.gov.agu.nutec.msescala.entity.PautaEntity;
 import br.gov.agu.nutec.msescala.service.EscalaService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ public class EscalaListener {
     private final EscalaService escalaService;
 
     @RabbitListener(queues = "${rabbitmq.queue.escala-pendente-avaliador}")
-    public void escalarAvaliadores(PautaEntity pauta) {
+    public void escalarAvaliadores(PautaMessage pauta) {
         escalaService.escalarAvaliadores(pauta);
     }
     

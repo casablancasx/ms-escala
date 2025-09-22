@@ -1,8 +1,10 @@
 package br.gov.agu.nutec.msescala.service;
 
+import br.gov.agu.nutec.msescala.dto.message.PautaMessage;
 import br.gov.agu.nutec.msescala.entity.*;
 import br.gov.agu.nutec.msescala.repository.AvaliadorRepository;
 import br.gov.agu.nutec.msescala.repository.EscalaRepository;
+import br.gov.agu.nutec.msescala.repository.PautaRepository;
 import br.gov.agu.nutec.msescala.repository.PautistaRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,21 +22,29 @@ public class EscalaService {
 
     private final AvaliadorRepository avaliadorRepository;
     private final EscalaRepository escalaRepository;
+    private final PautaRepository pautaRepository;
     private final PautistaRepository pautistaRepository;
 
     private final CadastrarTarefaService cadastrarTarefaService;
 
 
     @Transactional
-    public void escalarAvaliadores(final PautaEntity pauta) {
+    public void escalarAvaliadores(final PautaMessage pautaMessage) {
 
+
+        PautaEntity pauta = buscarPautaPorId(pautaMessage.pautaId());
         List<AvaliadorEntity> avaliadores = avaliadorRepository.buscarAvaliadoresDisponveis(pauta.getData());
         var avaliadorSelecionado = selecionarAvaliador(avaliadores);
         escalarAvaliadorNaPauta(avaliadorSelecionado, pauta);
 
         for (AudienciaEntity audiencia : pauta.getAudiencias()) {
-            cadastrarTarefaService.cadastrarTarefaSapiens(audiencia, avaliadorSelecionado);
+            cadastrarTarefaService.cadastrarTarefaSapiens(audiencia, avaliadorSelecionado,pautaMessage.token());
         }
+    }
+
+    private PautaEntity buscarPautaPorId(Long pautaId) {
+        return pautaRepository.findById(pautaId)
+                .orElseThrow(() -> new RuntimeException("Pauta não encontrada com ID: " + pautaId));
     }
 
     private void escalarAvaliadorNaPauta(final AvaliadorEntity avaliador,final PautaEntity pauta) {
