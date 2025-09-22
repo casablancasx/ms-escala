@@ -46,4 +46,12 @@ public class AvaliadorEntity extends EntidadeSapiens{
         final int PESO_AUDIENCIA = 2;
         return (quantidadePautas * PESO_PAUTA) + (quantidadeAudiencias * PESO_AUDIENCIA);
     }
+
+    public void incrementarPautas() {
+        this.quantidadePautas++;
+    }
+
+    public void incrementarAudiencias(PautaEntity pauta) {
+        quantidadeAudiencias += pauta.getAudiencias().size();
+    }
 }

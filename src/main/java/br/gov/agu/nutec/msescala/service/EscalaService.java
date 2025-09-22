@@ -57,6 +57,10 @@ public class EscalaService {
         escala.setCriadoEm(LocalDateTime.now());
         escalaRepository.save(escala);
 
+        avaliador.incrementarPautas();
+        avaliador.incrementarAudiencias(pauta);
+        avaliadorRepository.save(avaliador);
+
         pauta.setStatusEscalaAvaliador(ESCALADA);
         pautaRepository.save(pauta);
     }
