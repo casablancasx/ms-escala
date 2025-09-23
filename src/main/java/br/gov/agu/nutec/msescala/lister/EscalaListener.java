@@ -19,7 +19,7 @@ public class EscalaListener {
     }
 
     @RabbitListener(queues = "${rabbitmq.queue.escala-pendente-pautista}", concurrency = "3-5")
-    public void escalarPautistas(PautaEntity pauta) {
+    public void escalarPautistas(PautaMessage pauta) {
         escalaService.escalarPautistas(pauta);
     }
 }

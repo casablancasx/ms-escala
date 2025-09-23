@@ -6,15 +6,17 @@ import br.gov.agu.nutec.msescala.repository.AvaliadorRepository;
 import br.gov.agu.nutec.msescala.repository.EscalaRepository;
 import br.gov.agu.nutec.msescala.repository.PautaRepository;
 import br.gov.agu.nutec.msescala.repository.PautistaRepository;
-import static br.gov.agu.nutec.msescala.enums.StatusEscalaPauta.ESCALADA;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+
+import static br.gov.agu.nutec.msescala.enums.StatusEscalaPauta.ESCALADA;
 
 
 @Service
@@ -34,14 +36,21 @@ public class EscalaService {
 
 
         PautaEntity pauta = buscarPautaPorId(pautaMessage.pautaId());
-        List<AvaliadorEntity> avaliadores = avaliadorRepository.buscarAvaliadoresDisponveis(pauta.getData());
+
+        List<AvaliadorEntity> avaliadores = new ArrayList<>();
+
+        if (pautaMessage.avaliadoresIds().isEmpty()) {
+            avaliadores = avaliadorRepository.buscarAvaliadoresDisponveis(pauta.getData());
+        } else {
+            avaliadores = avaliadorRepository.findAllById(pautaMessage.avaliadoresIds());
+        }
 
         var avaliadorSelecionado = selecionarAvaliador(avaliadores);
         escalarAvaliadorNaPauta(avaliadorSelecionado, pauta);
 
 
         for (AudienciaEntity audiencia : pauta.getAudiencias()) {
-            cadastrarTarefaService.cadastrarTarefaSapiens(audiencia,pauta, avaliadorSelecionado,pautaMessage);
+            cadastrarTarefaService.cadastrarTarefaSapiens(audiencia, pauta, avaliadorSelecionado, pautaMessage);
         }
     }
 
@@ -50,7 +59,7 @@ public class EscalaService {
                 .orElseThrow(() -> new RuntimeException("Pauta não encontrada com ID: " + pautaId));
     }
 
-    private void escalarAvaliadorNaPauta(final AvaliadorEntity avaliador,final PautaEntity pauta) {
+    private void escalarAvaliadorNaPauta(final AvaliadorEntity avaliador, final PautaEntity pauta) {
         EscalaEntity escala = new EscalaEntity();
         escala.setAvaliador(avaliador);
         escala.setPauta(pauta);
@@ -70,31 +79,40 @@ public class EscalaService {
                 .min(Comparator.comparingInt(AvaliadorEntity::calcularCargaTrabalho))
                 .orElseThrow(() -> new RuntimeException("Nenhum avaliador disponivel para escala"));
     }
-    
-    @Transactional
-    public void escalarPautistas(final PautaEntity pauta) {
 
-        List<PautistaEntity> pautistasDisponiveis = pautistaRepository.buscarPautistasDisponiveis(pauta.getData());
-        var pautistaSelecionado = selecionarPautista(pautistasDisponiveis, pauta.getOrgaoJulgador());
+    @Transactional
+    public void escalarPautistas(final PautaMessage pautaMessage) {
+
+        PautaEntity pauta = buscarPautaPorId(pautaMessage.pautaId());
+
+        List<PautistaEntity> pautistasDispinveis = new ArrayList<>();
+
+        if (pautaMessage.pautistasIds().isEmpty()) {
+            pautistasDispinveis = pautistaRepository.buscarPautistasDisponiveis(pauta.getData());
+        } else {
+            pautistasDispinveis = pautistaRepository.findAllById(pautaMessage.pautistasIds());
+        }
+
+        var pautistaSelecionado = selecionarPautista(pautistasDispinveis, pauta.getOrgaoJulgador());
+
         escalarPautistaNaPauta(pautistaSelecionado, pauta);
-        
+
         for (AudienciaEntity audiencia : pauta.getAudiencias()) {
-            cadastrarTarefaService.cadastrarTarefaSapiens(audiencia, pauta, pautistaSelecionado, 
-                new PautaMessage("Pauta para escala de pautista", pauta.getPautaId(), null, null, null));
+            cadastrarTarefaService.cadastrarTarefaSapiens(audiencia, pauta, pautistaSelecionado, pautaMessage);
         }
     }
-    
+
     private void escalarPautistaNaPauta(final PautistaEntity pautista, final PautaEntity pauta) {
         EscalaEntity escala = escalaRepository.findByPauta_PautaId(pauta.getPautaId());
         escala.setPautista(pautista);
         escala.setPauta(pauta);
         escala.setCriadoEm(LocalDateTime.now());
         escalaRepository.save(escala);
-        
+
         pautista.incrementarPautas();
         pautista.incrementarAudiencias(pauta);
         pautistaRepository.save(pautista);
-        
+
         pauta.setStatusEscalaPautista(ESCALADA);
         pautaRepository.save(pauta);
     }
