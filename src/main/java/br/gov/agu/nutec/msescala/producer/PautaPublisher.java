@@ -58,7 +58,10 @@ public class PautaPublisher {
             );
 
             pautas.parallelStream().forEach(pauta -> {
-                rabbitTemplate.convertAndSend(exchange, bindingKeyAvaliador, new PautaMessage("Pauta para escala de avaliador", pauta.getPautaId(), request.setorOrigemId(), request.especieTarefaId(), token));
+                rabbitTemplate.convertAndSend(
+                        exchange,
+                        bindingKeyAvaliador,
+                        new PautaMessage("Pauta para escala de avaliador", pauta.getPautaId(), request.setorOrigemId(), request.especieTarefaId(), request.avaliadorIds(), request.pautistaIds(), token));
             });
         }
 
@@ -91,7 +94,7 @@ public class PautaPublisher {
         }
 
         pautas.parallelStream().forEach(pauta -> {
-            rabbitTemplate.convertAndSend(exchange, bindingKeyPautista, new PautaMessage("Pauta para escala de pautista", pauta.getPautaId(), request.setorOrigemId(), request.especieTarefaId(), token));
+            rabbitTemplate.convertAndSend(exchange, bindingKeyPautista, new PautaMessage("Pauta para escala de pautista", pauta.getPautaId(), request.setorOrigemId(), request.especieTarefaId(),request.avaliadorIds(),request.pautistaIds(), token));
         });
     }
 }
