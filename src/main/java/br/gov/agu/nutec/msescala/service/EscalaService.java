@@ -2,6 +2,7 @@ package br.gov.agu.nutec.msescala.service;
 
 import br.gov.agu.nutec.msescala.dto.message.PautaMessage;
 import br.gov.agu.nutec.msescala.entity.*;
+import br.gov.agu.nutec.msescala.exceptions.SemPautistaDisponivelException;
 import br.gov.agu.nutec.msescala.repository.AvaliadorRepository;
 import br.gov.agu.nutec.msescala.repository.EscalaRepository;
 import br.gov.agu.nutec.msescala.repository.PautaRepository;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static br.gov.agu.nutec.msescala.enums.StatusEscalaPauta.ESCALADA;
+import static br.gov.agu.nutec.msescala.enums.StatusEscalaPauta.SEM_PAUTISTA_DISPONIVEL;
 
 
 @Service
@@ -93,13 +95,20 @@ public class EscalaService {
             pautistasDispinveis = pautistaRepository.findAllById(pautaMessage.pautistasIds());
         }
 
-        var pautistaSelecionado = selecionarPautista(pautistasDispinveis, pauta.getOrgaoJulgador());
 
-        escalarPautistaNaPauta(pautistaSelecionado, pauta);
+        try {
+            var pautistaSelecionado = selecionarPautista(pautistasDispinveis, pauta.getOrgaoJulgador());
+            escalarPautistaNaPauta(pautistaSelecionado, pauta);
+            for (AudienciaEntity audiencia : pauta.getAudiencias()) {
+                cadastrarTarefaService.cadastrarTarefaSapiens(audiencia, pauta, pautistaSelecionado, pautaMessage);
+            }
 
-        for (AudienciaEntity audiencia : pauta.getAudiencias()) {
-            cadastrarTarefaService.cadastrarTarefaSapiens(audiencia, pauta, pautistaSelecionado, pautaMessage);
+        } catch (SemPautistaDisponivelException e) {
+            pauta.setStatusEscalaPautista(SEM_PAUTISTA_DISPONIVEL);
+            pautaRepository.save(pauta);
         }
+
+
     }
 
     private void escalarPautistaNaPauta(final PautistaEntity pautista, final PautaEntity pauta) {
@@ -124,7 +133,7 @@ public class EscalaService {
 
         return pautistaComPreferencia.orElseGet(() -> pautistas.stream()
                 .min(Comparator.comparingInt(PautistaEntity::calcularCargaTrabalho))
-                .orElseThrow(() -> new RuntimeException("Nenhum pautista disponível para escala")));
+                .orElseThrow(() -> new SemPautistaDisponivelException("Nenhum pautista disponível para escala")));
 
     }
 }
