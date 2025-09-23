@@ -64,15 +64,34 @@ public class PautaPublisher {
 
     }
 
-    public void iniciarEscalaPautistas(EscalaRequestDTO escalaRequestDTO, String token) {
+    public void iniciarEscalaPautistas(EscalaRequestDTO request, String token) {
 
-        List<PautaEntity> pautas = pautaRepository.buscarPautasSemPautistaEscalados(
-                escalaRequestDTO.dataInicio(),
-                escalaRequestDTO.dataFim(),
-                escalaRequestDTO.uf());
+        List<PautaEntity> pautas = new ArrayList<>();
+
+        if (request.uf() != null && request.orgaoJulgadorIds().isEmpty()) {
+            pautas = pautaRepository.buscarPautasSemPautistasEscaladosPorUf(
+                    request.dataInicio(),
+                    request.dataFim(),
+                    request.uf());
+        }
+
+        if (request.orgaoJulgadorIds().isEmpty() && request.uf() == null) {
+            pautas = pautaRepository.buscarPautasSemPautistasEscaladosPorPeriodo(
+                    request.dataInicio(),
+                    request.dataFim()
+            );
+        }
+
+        if (!request.orgaoJulgadorIds().isEmpty()) {
+            pautas = pautaRepository.buscarPautasSemPautistasEscaladosPorOrgaoJulgador(
+                    request.dataInicio(),
+                    request.dataFim(),
+                    request.orgaoJulgadorIds()
+            );
+        }
 
         pautas.parallelStream().forEach(pauta -> {
-            rabbitTemplate.convertAndSend(exchange, bindingKeyPautista, pauta);
+            rabbitTemplate.convertAndSend(exchange, bindingKeyPautista, new PautaMessage("Pauta para escala de pautista", pauta.getPautaId(), request.setorOrigemId(), request.especieTarefaId(), token));
         });
     }
 }

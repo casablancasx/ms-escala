@@ -67,4 +67,12 @@ public class PautistaEntity extends EntidadeSapiens {
     public boolean temPreferenciaPorOrgaoJulgador(OrgaoJulgadorEntity orgaoJulgador) {
         return preferenciasOrgaosJulgadores.contains(orgaoJulgador);
     }
+    
+    public void incrementarPautas() {
+        this.quantidadePautas++;
+    }
+
+    public void incrementarAudiencias(PautaEntity pauta) {
+        this.quantiadeAudiencias += pauta.getAudiencias().size();
+    }
 }

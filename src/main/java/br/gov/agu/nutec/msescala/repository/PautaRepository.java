@@ -28,7 +28,7 @@ public interface PautaRepository extends JpaRepository<PautaEntity, Long> {
             "p.orgaoJulgador.uf.sigla = :uf AND " +
             "p.statusAnaliseComparecimento = br.gov.agu.nutec.msescala.enums.StatusAnaliseComparecimento.COMPARECER AND " +
             "NOT EXISTS (SELECT e FROM EscalaEntity e WHERE e.pauta = p AND e.pautista IS NOT NULL)")
-    List<PautaEntity> buscarPautasSemPautistaEscaladosPorUf(
+    List<PautaEntity> buscarPautasSemPautistasEscaladosPorUf(
             @Param("dataInicio") LocalDate dataInicio,
             @Param("dataFim") LocalDate dataFim,
             @Param("uf") Uf uf);
@@ -43,4 +43,22 @@ public interface PautaRepository extends JpaRepository<PautaEntity, Long> {
             "p.orgaoJulgador.orgaoJulgadorId IN :orgaoJulgadorIds AND " +
             "NOT EXISTS (SELECT e FROM EscalaEntity e WHERE e.pauta = p AND e.avaliador IS NOT NULL)")
     List<PautaEntity> buscarPautasSemAvaliadoresEscaladosPorOrgaoJulgador(LocalDate localDate, LocalDate localDate1, List<Long> longs);
+    
+    @Query("SELECT p FROM PautaEntity p WHERE " +
+            "p.data BETWEEN :dataInicio AND :dataFim AND " +
+            "p.statusAnaliseComparecimento = br.gov.agu.nutec.msescala.enums.StatusAnaliseComparecimento.COMPARECER AND " +
+            "NOT EXISTS (SELECT e FROM EscalaEntity e WHERE e.pauta = p AND e.pautista IS NOT NULL)")
+    List<PautaEntity> buscarPautasSemPautistasEscaladosPorPeriodo(
+            @Param("dataInicio") LocalDate dataInicio, 
+            @Param("dataFim") LocalDate dataFim);
+    
+    @Query("SELECT p FROM PautaEntity p WHERE " +
+            "p.data BETWEEN :dataInicio AND :dataFim AND " +
+            "p.orgaoJulgador.orgaoJulgadorId IN :orgaoJulgadorIds AND " +
+            "p.statusAnaliseComparecimento = br.gov.agu.nutec.msescala.enums.StatusAnaliseComparecimento.COMPARECER AND " +
+            "NOT EXISTS (SELECT e FROM EscalaEntity e WHERE e.pauta = p AND e.pautista IS NOT NULL)")
+    List<PautaEntity> buscarPautasSemPautistasEscaladosPorOrgaoJulgador(
+            @Param("dataInicio") LocalDate dataInicio, 
+            @Param("dataFim") LocalDate dataFim, 
+            @Param("orgaoJulgadorIds") List<Long> orgaoJulgadorIds);
 }

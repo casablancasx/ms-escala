@@ -77,6 +77,11 @@ public class EscalaService {
         List<PautistaEntity> pautistasDisponiveis = pautistaRepository.buscarPautistasDisponiveis(pauta.getData());
         var pautistaSelecionado = selecionarPautista(pautistasDisponiveis, pauta.getOrgaoJulgador());
         escalarPautistaNaPauta(pautistaSelecionado, pauta);
+        
+        for (AudienciaEntity audiencia : pauta.getAudiencias()) {
+            cadastrarTarefaService.cadastrarTarefaSapiens(audiencia, pauta, pautistaSelecionado, 
+                new PautaMessage("Pauta para escala de pautista", pauta.getPautaId(), null, null, null));
+        }
     }
     
     private void escalarPautistaNaPauta(final PautistaEntity pautista, final PautaEntity pauta) {
@@ -85,6 +90,13 @@ public class EscalaService {
         escala.setPauta(pauta);
         escala.setCriadoEm(LocalDateTime.now());
         escalaRepository.save(escala);
+        
+        pautista.incrementarPautas();
+        pautista.incrementarAudiencias(pauta);
+        pautistaRepository.save(pautista);
+        
+        pauta.setStatusEscalaPautista(ESCALADA);
+        pautaRepository.save(pauta);
     }
 
     private PautistaEntity selecionarPautista(final List<PautistaEntity> pautistas, OrgaoJulgadorEntity orgaoJulgador) {
