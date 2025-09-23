@@ -9,6 +9,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -23,24 +24,47 @@ public class PautaPublisher {
 
     @Value("${rabbitmq.bindingkey.avaliador}")
     private String bindingKeyAvaliador;
-    
+
     @Value("${rabbitmq.bindingkey.pautista}")
     private String bindingKeyPautista;
 
 
     public void iniciarEscalaAvaliadores(EscalaRequestDTO request, String token) {
 
-        List<PautaEntity> pautas = pautaRepository.buscarPautasSemAvaliadoresEscalados(
-                request.dataInicio(),
-                request.dataFim(),
-                request.uf());
+        List<PautaEntity> pautas = new ArrayList<>();
 
-        pautas.parallelStream().forEach(pauta -> {
-            rabbitTemplate.convertAndSend(exchange, bindingKeyAvaliador, new PautaMessage("Pauta para escala de avaliador", pauta.getPautaId(),request.setorOrigemId(),request.especieTarefaId(), token));
-        });
+
+        if (request.uf() != null && request.orgaoJulgadorIds().isEmpty()) {
+
+            pautas = pautaRepository.buscarPautasSemAvaliadoresEscaladosPorUf(
+                    request.dataInicio(),
+                    request.dataFim(),
+                    request.uf());
+
+        }
+
+        if (request.orgaoJulgadorIds().isEmpty() && request.uf() == null) {
+            pautas = pautaRepository.buscarPautasSemAvaliadoresEscaladosPorPeriodo(
+                    request.dataInicio(),
+                    request.dataFim()
+            );
+        }
+
+        if (!request.orgaoJulgadorIds().isEmpty()) {
+            pautas = pautaRepository.buscarPautasSemAvaliadoresEscaladosPorOrgaoJulgador(
+                    request.dataInicio(),
+                    request.dataFim(),
+                    request.orgaoJulgadorIds()
+            );
+
+            pautas.parallelStream().forEach(pauta -> {
+                rabbitTemplate.convertAndSend(exchange, bindingKeyAvaliador, new PautaMessage("Pauta para escala de avaliador", pauta.getPautaId(), request.setorOrigemId(), request.especieTarefaId(), token));
+            });
+        }
+
     }
 
-    public void iniciarEscalaPautistas(EscalaRequestDTO escalaRequestDTO) {
+    public void iniciarEscalaPautistas(EscalaRequestDTO escalaRequestDTO, String token) {
 
         List<PautaEntity> pautas = pautaRepository.buscarPautasSemPautistaEscalados(
                 escalaRequestDTO.dataInicio(),

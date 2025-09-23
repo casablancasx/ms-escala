@@ -17,14 +17,13 @@ public class EscalaController {
 
     @PostMapping("/avaliadores")
     public ResponseEntity<?> escalarAvaliadores(@RequestBody EscalaRequestDTO escalaRequestDTO,@RequestHeader("Authorization") String token) {
-        token = token.replace("Bearer ", "");
-        pautaPublisher.iniciarEscalaAvaliadores(escalaRequestDTO, token);
+        pautaPublisher.iniciarEscalaAvaliadores(escalaRequestDTO, token.replace("Bearer ", ""));
         return ResponseEntity.ok("Avaliadores escalados com sucesso!");
     }
 
     @PostMapping("/pautistas")
-    public ResponseEntity<?> escalarPautistas(@RequestBody EscalaRequestDTO escalaRequestDTO) {
-        pautaPublisher.iniciarEscalaPautistas(escalaRequestDTO);
+    public ResponseEntity<?> escalarPautistas(@RequestBody EscalaRequestDTO escalaRequestDTO,@RequestHeader("Authorization") String token) {
+        pautaPublisher.iniciarEscalaPautistas(escalaRequestDTO, token.replace("Bearer ", ""));
         return ResponseEntity.ok("Pautistas escalados com sucesso!");
     }
 }

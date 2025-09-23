@@ -13,23 +13,34 @@ import java.util.List;
 @Repository
 public interface PautaRepository extends JpaRepository<PautaEntity, Long> {
 
-     @Query("SELECT p FROM PautaEntity p WHERE " +
-           "p.data BETWEEN :dataInicio AND :dataFim AND " +
-           "p.orgaoJulgador.uf.sigla = :uf AND " +
-           "NOT EXISTS (SELECT e FROM EscalaEntity e WHERE e.pauta = p AND e.avaliador IS NOT NULL)")
-     List<PautaEntity> buscarPautasSemAvaliadoresEscalados(
-        @Param("dataInicio") LocalDate dataInicio,
-        @Param("dataFim") LocalDate dataFim,
-        @Param("uf") Uf uf);
+    @Query("SELECT p FROM PautaEntity p WHERE " +
+            "p.data BETWEEN :dataInicio AND :dataFim AND " +
+            "p.orgaoJulgador.uf.sigla = :uf AND " +
+            "NOT EXISTS (SELECT e FROM EscalaEntity e WHERE e.pauta = p AND e.avaliador IS NOT NULL)")
+    List<PautaEntity> buscarPautasSemAvaliadoresEscaladosPorUf(
+            @Param("dataInicio") LocalDate dataInicio,
+            @Param("dataFim") LocalDate dataFim,
+            @Param("uf") Uf uf);
 
-     @Query("SELECT p FROM PautaEntity p WHERE " +
-             "p.data BETWEEN :dataInicio AND :dataFim AND " +
-             "p.orgaoJulgador.uf.sigla = :uf AND " +
-             "p.statusAnaliseComparecimento = br.gov.agu.nutec.msescala.enums.StatusAnaliseComparecimento.COMPARECER AND " +
-             "NOT EXISTS (SELECT e FROM EscalaEntity e WHERE e.pauta = p AND e.pautista IS NOT NULL)")
-     List<PautaEntity> buscarPautasSemPautistaEscalados(
-             @Param("dataInicio") LocalDate dataInicio,
-             @Param("dataFim") LocalDate dataFim,
-             @Param("uf") Uf uf);
 
+    @Query("SELECT p FROM PautaEntity p WHERE " +
+            "p.data BETWEEN :dataInicio AND :dataFim AND " +
+            "p.orgaoJulgador.uf.sigla = :uf AND " +
+            "p.statusAnaliseComparecimento = br.gov.agu.nutec.msescala.enums.StatusAnaliseComparecimento.COMPARECER AND " +
+            "NOT EXISTS (SELECT e FROM EscalaEntity e WHERE e.pauta = p AND e.pautista IS NOT NULL)")
+    List<PautaEntity> buscarPautasSemPautistaEscaladosPorUf(
+            @Param("dataInicio") LocalDate dataInicio,
+            @Param("dataFim") LocalDate dataFim,
+            @Param("uf") Uf uf);
+
+    @Query("SELECT p FROM PautaEntity p WHERE " +
+            "p.data BETWEEN :dataInicio AND :dataFim AND " +
+            "NOT EXISTS (SELECT e FROM EscalaEntity e WHERE e.pauta = p AND e.avaliador IS NOT NULL)")
+    List<PautaEntity> buscarPautasSemAvaliadoresEscaladosPorPeriodo(LocalDate localDate, LocalDate localDate1);
+
+    @Query("SELECT p FROM PautaEntity p WHERE " +
+            "p.data BETWEEN :dataInicio AND :dataFim AND " +
+            "p.orgaoJulgador.orgaoJulgadorId IN :orgaoJulgadorIds AND " +
+            "NOT EXISTS (SELECT e FROM EscalaEntity e WHERE e.pauta = p AND e.avaliador IS NOT NULL)")
+    List<PautaEntity> buscarPautasSemAvaliadoresEscaladosPorOrgaoJulgador(LocalDate localDate, LocalDate localDate1, List<Long> longs);
 }
