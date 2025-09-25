@@ -21,6 +21,7 @@ public class UsuarioEntity extends EntidadeSapiens {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer usuarioId;
 
+    private String cpf;
 
     @OneToMany(mappedBy = "adicionadoPor")
     private List<PautistaEntity> pautistasAdicionados;

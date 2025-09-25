@@ -1,6 +1,18 @@
 package br.gov.agu.nutec.msescala.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,17 +34,24 @@ public class PautistaEntity extends EntidadeSapiens {
     @Column(name = "pautista_id")
     private Integer pautistaId;
 
-    private boolean afastado;
-
-    private boolean escalaAutomatica;
-
     private Integer quantidadePautas;
 
     private Integer quantiadeAudiencias;
 
+    private boolean disponivel = true;
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "adicionado_por_id")
     private UsuarioEntity adicionadoPor;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "setor_id")
+    private SetorEntity setor;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "unidade_id")
+    private UnidadeEntity unidade;
 
     @OneToMany(mappedBy = "pautista", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AfastamentoEntity> afastamentos = new ArrayList<>();
@@ -42,9 +61,9 @@ public class PautistaEntity extends EntidadeSapiens {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-        name = "tb_pautista_preferencias_orgaos",
-        joinColumns = @JoinColumn(name = "pautista_id"),
-        inverseJoinColumns = @JoinColumn(name = "orgao_julgador_id")
+            name = "tb_pautista_preferencias_orgaos",
+            joinColumns = @JoinColumn(name = "pautista_id"),
+            inverseJoinColumns = @JoinColumn(name = "orgao_julgador_id")
     )
     private List<OrgaoJulgadorEntity> preferenciasOrgaosJulgadores = new ArrayList<>();
 
@@ -67,7 +86,7 @@ public class PautistaEntity extends EntidadeSapiens {
     public boolean temPreferenciaPorOrgaoJulgador(OrgaoJulgadorEntity orgaoJulgador) {
         return preferenciasOrgaosJulgadores.contains(orgaoJulgador);
     }
-    
+
     public void incrementarPautas() {
         this.quantidadePautas++;
     }

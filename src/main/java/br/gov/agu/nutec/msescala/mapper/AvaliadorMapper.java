@@ -1,6 +1,6 @@
 package br.gov.agu.nutec.msescala.mapper;
 
-import br.gov.agu.nutec.msescala.dto.request.CadastroAvaliadorRequestDTO;
+import br.gov.agu.nutec.msescala.dto.request.AvaliadorRequestDTO;
 import br.gov.agu.nutec.msescala.dto.response.AvaliadorResponseDTO;
 import br.gov.agu.nutec.msescala.dto.response.UsuarioResponseDTO;
 import br.gov.agu.nutec.msescala.entity.AvaliadorEntity;
@@ -19,7 +19,7 @@ public interface AvaliadorMapper {
     @Mapping(target = "quantidadeAudiencias", constant = "0")
     @Mapping(target = "quantidadePautas", constant = "0")
     @Mapping(target = "criadoEm", expression = "java(java.time.LocalDateTime.now())")
-    AvaliadorEntity mapToEntity(CadastroAvaliadorRequestDTO requestDTO);
+    AvaliadorEntity mapToEntity(AvaliadorRequestDTO requestDTO);
 
 
     @Mapping(target = "adicionadoPor", source = "adicionadoPor", qualifiedByName = "mapUsuarioToDto")
