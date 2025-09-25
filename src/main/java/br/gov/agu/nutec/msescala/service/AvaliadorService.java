@@ -30,10 +30,11 @@ public class AvaliadorService {
 
     private final UsuarioRepository usuarioRepository;
     private final AvaliadorRepository avaliadorRepository;
-    private final UnidadeRepository unidadeRepository;
-    private final SetorRepository setorRepository;
+
 
     private final AvaliadorMapper avaliadorMapper;
+    private final UnidadeService unidadeService;
+    private final SetorService setorService;
 
 
     @Transactional
@@ -43,8 +44,8 @@ public class AvaliadorService {
         UsuarioEntity user = usuarioRepository.findBySapiensId(decoded.sapiensId())
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
 
-        UnidadeEntity unidade = buscarOuCriarUnidade(request.unidade());
-        SetorEntity setor = buscarOuCriarSetor(request.setor(), unidade);
+        UnidadeEntity unidade = unidadeService.buscarUnidade(request.unidade());
+        SetorEntity setor = setorService.buscarSetor(request.setor(), unidade);
 
         AvaliadorEntity avaliador = avaliadorMapper.mapToEntity(request);
         avaliador.setAdicionadoPor(user);
@@ -53,18 +54,5 @@ public class AvaliadorService {
         avaliadorRepository.save(avaliador);
         return avaliadorMapper.mapToResponseDTO(avaliador);
     }
-
-    private SetorEntity buscarOuCriarSetor(SetoRequestDTO setoRequest, UnidadeEntity unidade) {
-        return setorRepository.findById(setoRequest.setorId()).orElseGet(() ->
-                setorRepository.save(new SetorEntity(setoRequest.setorId(), setoRequest.nome(), unidade))
-        );
-    }
-
-    private UnidadeEntity buscarOuCriarUnidade(UnidadeRequestDTO unidadeRequest) {
-        return unidadeRepository.findById(unidadeRequest.unidadeId()).orElseGet(
-                () -> unidadeRepository.save(new UnidadeEntity(unidadeRequest.unidadeId(),  unidadeRequest.nome()))
-        );
-    }
-
-
+    
 }

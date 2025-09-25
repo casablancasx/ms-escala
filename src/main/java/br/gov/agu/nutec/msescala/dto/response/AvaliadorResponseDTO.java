@@ -8,22 +8,26 @@ public record AvaliadorResponseDTO(
         Long avaliadorId,
         @JsonProperty(value = "nome")
         String nome,
-        @JsonProperty(value = "cpf")
-        String cpf,
+        @JsonProperty(value = "telefone")
+        String telefone,
         @JsonProperty(value = "email")
         String email,
         @JsonProperty(value = "setor_id")
-        Long setorId,
+        String setor,
         @JsonProperty(value = "unidade_id")
-        Long unidadeId,
+        String unidade,
         @JsonProperty(value = "sapiens_id")
         Long sapiensId,
         @JsonProperty(value = "quantidadeAudiencias")
-        Long quantidadeAudiencias,
+        Integer quantidadeAudiencias,
         @JsonProperty(value = "quantidadePautas")
-        Long quantidadePautas,
+        Integer quantidadePautas,
+        @JsonProperty(value = "score")
+        Integer score,
+        @JsonProperty(value = "disponivel")
+        boolean disponivel,
         @JsonProperty(value = "adicionadoPor")
-        UsuarioResponseDTO adicionadoPor
+        String adicionadoPor
 
 ) {
 }

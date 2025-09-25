@@ -14,34 +14,18 @@ public interface AvaliadorMapper {
 
     @Mapping(target = "afastamentos", ignore = true)
     @Mapping(target = "escalas", ignore = true)
-    @Mapping(target = "afastado", constant = "false")
-    @Mapping(target = "escalaAutomatica", source = "escalaAutomatica")
+    @Mapping(target = "setor", ignore = true)
+    @Mapping(target = "unidade", ignore = true)
     @Mapping(target = "quantidadeAudiencias", constant = "0")
     @Mapping(target = "quantidadePautas", constant = "0")
     @Mapping(target = "criadoEm", expression = "java(java.time.LocalDateTime.now())")
     AvaliadorEntity mapToEntity(AvaliadorRequestDTO requestDTO);
 
 
-    @Mapping(target = "adicionadoPor", source = "adicionadoPor", qualifiedByName = "mapUsuarioToDto")
+    @Mapping(target = "adicionadoPor", source = "adicionadoPor.nome")
+    @Mapping(target = "setor", source = "setor.nome")
+    @Mapping(target = "unidade", source = "unidade.nome")
+    @Mapping(target = "score", expression = "java(entity.calcularCargaTrabalho())")
     AvaliadorResponseDTO mapToResponseDTO(AvaliadorEntity entity);
 
-    /**
-     * Maps the Usuario entity to DTO while preventing circular references
-     */
-    @Named("mapUsuarioToDto")
-    default UsuarioResponseDTO mapUsuarioToDto(UsuarioEntity usuario) {
-        if (usuario == null) {
-            return null;
-        }
-
-        return new UsuarioResponseDTO(
-                usuario.getUsuarioId().longValue(),
-                usuario.getNome(),
-                usuario.getCpf(),
-                usuario.getEmail(),
-                usuario.getSetorId(),
-                usuario.getUnidadeId(),
-                usuario.getSapiensId()
-        );
-    }
 }
