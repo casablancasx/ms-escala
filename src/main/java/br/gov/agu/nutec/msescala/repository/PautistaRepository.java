@@ -10,17 +10,21 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface PautistaRepository extends JpaRepository<PautistaEntity, Long> {
+public interface PautistaRepository extends JpaRepository<PautistaEntity, Integer> {
 
 
         @Query(value = """
             SELECT p FROM PautistaEntity p
-            WHERE p.afastado = false
-            AND p.escalaAutomatica = true
+            WHERE p.disponivel = true
             AND p.pautistaId NOT IN (
                 SELECT e.pautista.pautistaId FROM EscalaEntity e
                 JOIN e.pauta pa
                 WHERE pa.data = :data
+            )
+            AND NOT EXISTS (
+                SELECT 1 FROM AfastamentoEntity a
+                WHERE a.pautista = p
+                AND :data BETWEEN a.inicio AND a.fim
             )
             """)
     List<PautistaEntity> buscarPautistasDisponiveis(@Param("data") LocalDate data);

@@ -16,8 +16,8 @@ import java.util.Set;
 @AllArgsConstructor
 public class UnidadeEntity {
 
-
     @Id
+    @Column(name = "unidade_id")
     private Long unidadeId;
 
     private String nome;

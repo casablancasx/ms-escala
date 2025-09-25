@@ -1,7 +1,6 @@
 package br.gov.agu.nutec.msescala.lister;
 
 import br.gov.agu.nutec.msescala.dto.message.PautaMessage;
-import br.gov.agu.nutec.msescala.entity.PautaEntity;
 import br.gov.agu.nutec.msescala.service.EscalaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;

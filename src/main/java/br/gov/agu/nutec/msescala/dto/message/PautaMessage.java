@@ -8,8 +8,8 @@ public record PautaMessage(
         Long pautaId,
         Integer setorOrigemId,
         Integer especieTarefaId,
-        List<Long> avaliadoresIds,
-        List<Long> pautistasIds,
+        List<Integer> avaliadoresIds,
+        List<Integer> pautistasIds,
         String token
 ) {
 }

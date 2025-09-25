@@ -19,7 +19,9 @@ public class AvaliadorEntity extends EntidadeSapiens{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long avaliadorId;
+    private Integer avaliadorId;
+
+    private String telefone;
 
     private Integer quantidadePautas = 0;
 
@@ -30,14 +32,6 @@ public class AvaliadorEntity extends EntidadeSapiens{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "adicionado_por_id")
     private UsuarioEntity adicionadoPor;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "setor_id")
-    private SetorEntity setor;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "unidade_id")
-    private UnidadeEntity unidade;
 
     @OneToMany(mappedBy = "avaliador", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AfastamentoEntity> afastamentos = new ArrayList<>();

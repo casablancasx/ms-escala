@@ -20,7 +20,7 @@ public class SetorEntity {
     private String nome;
 
     @ManyToOne
-    @JoinColumn(name = "setor_id", referencedColumnName = "setor_id")
+    @JoinColumn(name = "unidade_id")
     private UnidadeEntity unidade;
 
 }

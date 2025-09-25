@@ -10,10 +10,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface AvaliadorRepository extends JpaRepository<AvaliadorEntity, Long> {
+public interface AvaliadorRepository extends JpaRepository<AvaliadorEntity, Integer> {
 
-    @Query("SELECT a FROM AvaliadorEntity a " +
-            "WHERE a.afastado = false " +
-            "AND a.escalaAutomatica = true")
+    @Query("SELECT a FROM AvaliadorEntity a WHERE a.disponivel = true")
     List<AvaliadorEntity> buscarAvaliadoresDisponveis(@Param("data") LocalDate data);
 }

@@ -34,6 +34,8 @@ public class PautistaEntity extends EntidadeSapiens {
     @Column(name = "pautista_id")
     private Integer pautistaId;
 
+    private String telefone;
+
     private Integer quantidadePautas;
 
     private Integer quantiadeAudiencias;
@@ -44,14 +46,6 @@ public class PautistaEntity extends EntidadeSapiens {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "adicionado_por_id")
     private UsuarioEntity adicionadoPor;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "setor_id")
-    private SetorEntity setor;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "unidade_id")
-    private UnidadeEntity unidade;
 
     @OneToMany(mappedBy = "pautista", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AfastamentoEntity> afastamentos = new ArrayList<>();

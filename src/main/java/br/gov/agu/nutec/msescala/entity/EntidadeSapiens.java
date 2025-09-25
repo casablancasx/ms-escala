@@ -1,8 +1,9 @@
 package br.gov.agu.nutec.msescala.entity;
 
-import br.gov.agu.nutec.msescala.enums.StatusCadastro;
-import jakarta.persistence.Entity;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,10 +24,22 @@ public abstract class EntidadeSapiens {
 
     private String email;
 
-    private Long setorId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "setor_id")
+    private SetorEntity setor;
 
-    private Long unidadeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "unidade_id")
+    private UnidadeEntity unidade;
 
     private LocalDateTime criadoEm;
 
+    // Conveniências para manter compatibilidade com código que lê os IDs
+    public Long getSetorId() {
+        return setor != null ? setor.getSetorId() : null;
+    }
+
+    public Long getUnidadeId() {
+        return unidade != null ? unidade.getUnidadeId() : null;
+    }
 }
