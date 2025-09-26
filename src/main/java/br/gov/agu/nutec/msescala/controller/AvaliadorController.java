@@ -46,4 +46,11 @@ public class AvaliadorController {
     }
 
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarAvaliador(@PathVariable Integer id) {
+        avaliadorService.deletarAvaliador(id);
+        return ResponseEntity.noContent().build();
+    }
+
+
 }

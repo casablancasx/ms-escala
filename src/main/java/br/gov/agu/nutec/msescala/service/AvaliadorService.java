@@ -91,4 +91,8 @@ public class AvaliadorService {
 
         return avaliadorMapper.mapToResponseDTO(avaliadorExistente);
     }
+
+    public void deletarAvaliador(Integer id) {
+        avaliadorRepository.deleteById(id);
+    }
 }
