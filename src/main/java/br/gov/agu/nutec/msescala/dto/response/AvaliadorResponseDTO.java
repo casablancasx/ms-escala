@@ -28,6 +28,5 @@ public record AvaliadorResponseDTO(
         boolean disponivel,
         @JsonProperty(value = "adicionadoPor")
         String adicionadoPor
-
 ) {
 }

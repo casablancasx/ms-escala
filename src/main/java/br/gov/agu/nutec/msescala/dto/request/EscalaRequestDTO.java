@@ -12,7 +12,7 @@ public record EscalaRequestDTO(
         LocalDate dataFim,
         Uf uf,
         List<Long> orgaoJulgadorIds,
-        List<Long> avaliadorIds,
-        List<Long> pautistaIds
+        List<Integer> avaliadorIds,
+        List<Integer> pautistaIds
 ) {
 }
