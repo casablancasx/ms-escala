@@ -2,27 +2,24 @@ package br.gov.agu.nutec.msescala.service;
 
 import br.gov.agu.nutec.msescala.dto.TokenDecoded;
 import br.gov.agu.nutec.msescala.dto.request.AvaliadorRequestDTO;
-import br.gov.agu.nutec.msescala.dto.request.SetoRequestDTO;
-import br.gov.agu.nutec.msescala.dto.request.UnidadeRequestDTO;
 import br.gov.agu.nutec.msescala.dto.response.AvaliadorResponseDTO;
+import br.gov.agu.nutec.msescala.dto.response.PageResponse;
 import br.gov.agu.nutec.msescala.entity.AvaliadorEntity;
 import br.gov.agu.nutec.msescala.entity.SetorEntity;
 import br.gov.agu.nutec.msescala.entity.UnidadeEntity;
 import br.gov.agu.nutec.msescala.entity.UsuarioEntity;
 import br.gov.agu.nutec.msescala.exceptions.ResourceNotFoundException;
-import br.gov.agu.nutec.msescala.exceptions.UnprocessableEntityException;
 import br.gov.agu.nutec.msescala.mapper.AvaliadorMapper;
 import br.gov.agu.nutec.msescala.repository.AvaliadorRepository;
-import br.gov.agu.nutec.msescala.repository.SetorRepository;
-import br.gov.agu.nutec.msescala.repository.UnidadeRepository;
 import br.gov.agu.nutec.msescala.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
-
-import static br.gov.agu.nutec.msescala.util.TokenUtil.decodeToken;
 
 @Service
 @RequiredArgsConstructor
@@ -35,11 +32,12 @@ public class AvaliadorService {
     private final AvaliadorMapper avaliadorMapper;
     private final UnidadeService unidadeService;
     private final SetorService setorService;
+    private final TokenService tokenService;
 
 
     @Transactional
     public AvaliadorResponseDTO cadastrarAvaliador(AvaliadorRequestDTO request, String token) {
-        TokenDecoded decoded = decodeToken(token);
+        TokenDecoded decoded = tokenService.decodeToken(token);
 
         UsuarioEntity user = usuarioRepository.findBySapiensId(decoded.sapiensId())
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
@@ -54,5 +52,29 @@ public class AvaliadorService {
         avaliadorRepository.save(avaliador);
         return avaliadorMapper.mapToResponseDTO(avaliador);
     }
-    
+
+    public PageResponse<AvaliadorResponseDTO> listarAvaliadores(int page, int size, String nome, String sort, String token) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
+
+        Page<AvaliadorEntity> avaliadoresPage;
+
+        if (nome == null || nome.isEmpty()) {
+            avaliadoresPage = avaliadorRepository.findAll(pageable);
+        } else {
+            avaliadoresPage = avaliadorRepository.findByNomeContainingIgnoreCase(nome, pageable);
+        }
+
+        var avaliadoresDTO = avaliadoresPage.getContent().stream()
+                .map(avaliadorMapper::mapToResponseDTO)
+                .toList();
+
+        return new PageResponse<>(
+                avaliadoresDTO,
+                avaliadoresPage.getNumber(),
+                avaliadoresPage.getSize(),
+                avaliadoresPage.getTotalElements(),
+                avaliadoresPage.getTotalPages()
+        );
+    }
 }
