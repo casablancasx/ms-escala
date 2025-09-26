@@ -12,6 +12,7 @@ import br.gov.agu.nutec.msescala.exceptions.ResourceNotFoundException;
 import br.gov.agu.nutec.msescala.mapper.AvaliadorMapper;
 import br.gov.agu.nutec.msescala.repository.AvaliadorRepository;
 import br.gov.agu.nutec.msescala.repository.UsuarioRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -76,5 +77,18 @@ public class AvaliadorService {
                 avaliadoresPage.getTotalElements(),
                 avaliadoresPage.getTotalPages()
         );
+    }
+
+    public AvaliadorResponseDTO atualizarAvaliador(Integer id, @Valid AvaliadorRequestDTO request, String token) {
+        AvaliadorEntity avaliadorExistente = avaliadorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Avaliador não encontrado com ID: " + id));
+
+        avaliadorExistente.setNome(request.nome());
+        avaliadorExistente.setEmail(request.email());
+        avaliadorExistente.setTelefone(request.telefone());
+        avaliadorExistente.setDisponivel(request.disponivel());
+        avaliadorRepository.save(avaliadorExistente);
+
+        return avaliadorMapper.mapToResponseDTO(avaliadorExistente);
     }
 }

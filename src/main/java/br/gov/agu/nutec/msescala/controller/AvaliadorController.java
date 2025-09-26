@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class AvaliadorController {
 
     private final AvaliadorService avaliadorService;
-    
+
     @Autowired
     public AvaliadorController(AvaliadorService avaliadorService) {
         this.avaliadorService = avaliadorService;
@@ -39,6 +39,11 @@ public class AvaliadorController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<AvaliadorResponseDTO> atualizarAvaliador(@PathVariable Integer id, @RequestBody @Valid AvaliadorRequestDTO request, @RequestHeader("Authorization") String token) {
+        var response = avaliadorService.atualizarAvaliador(id, request, token);
+        return ResponseEntity.ok(response);
+    }
 
 
 }

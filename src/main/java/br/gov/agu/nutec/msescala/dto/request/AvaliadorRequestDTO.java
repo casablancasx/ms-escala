@@ -8,6 +8,7 @@ public record AvaliadorRequestDTO(
         @NotBlank(message = "É obrigatório informar o email do avaliador")
         String email,
         String telefone,
+        boolean disponivel,
         SetoRequestDTO setor,
         UnidadeRequestDTO unidade
 ) {
