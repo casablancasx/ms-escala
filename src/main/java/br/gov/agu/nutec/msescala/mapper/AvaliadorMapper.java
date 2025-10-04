@@ -15,6 +15,7 @@ public interface AvaliadorMapper {
     @Mapping(target = "afastamentos", ignore = true)
     @Mapping(target = "escalas", ignore = true)
     @Mapping(target = "setor", ignore = true)
+    @Mapping(target = "sapiensId", source = "sapiensId")
     @Mapping(target = "quantidadeAudiencias", constant = "0")
     @Mapping(target = "quantidadePautas", constant = "0")
     @Mapping(target = "criadoEm", expression = "java(java.time.LocalDateTime.now())")

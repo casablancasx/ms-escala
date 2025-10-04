@@ -45,6 +45,7 @@ public class AvaliadorService {
         SetorEntity setor = setorService.buscarSetor(request);
 
         AvaliadorEntity avaliador = avaliadorMapper.mapToEntity(request);
+        avaliador.setSapiensId(request.sapiensId());
         avaliador.setAdicionadoPor(user);
         avaliador.setSetor(setor);
         avaliadorRepository.save(avaliador);

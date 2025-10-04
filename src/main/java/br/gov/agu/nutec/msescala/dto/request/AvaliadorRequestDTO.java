@@ -9,6 +9,7 @@ public record AvaliadorRequestDTO(
         String email,
         String telefone,
         boolean disponivel,
+        Long sapiensId,
         SetoRequestDTO setor,
         UnidadeRequestDTO unidade
 ) {
