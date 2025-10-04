@@ -31,7 +31,6 @@ public class AvaliadorService {
 
 
     private final AvaliadorMapper avaliadorMapper;
-    private final UnidadeService unidadeService;
     private final SetorService setorService;
     private final TokenService tokenService;
 
