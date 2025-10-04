@@ -1,5 +1,6 @@
 package br.gov.agu.nutec.msescala.service;
 
+import br.gov.agu.nutec.msescala.dto.request.AvaliadorRequestDTO;
 import br.gov.agu.nutec.msescala.dto.request.UnidadeRequestDTO;
 import br.gov.agu.nutec.msescala.entity.UnidadeEntity;
 import br.gov.agu.nutec.msescala.repository.UnidadeRepository;
@@ -15,12 +16,12 @@ public class UnidadeService {
         this.unidadeRepository = unidadeRepository;
     }
 
-    public UnidadeEntity buscarUnidade(UnidadeRequestDTO unidadeRequest) {
-        return unidadeRepository.findById(unidadeRequest.unidadeId())
-                .orElseGet(() -> criarUnidade(unidadeRequest));
+    public UnidadeEntity buscarUnidade(AvaliadorRequestDTO request) {
+        return unidadeRepository.findById(request.unidade().unidadeId())
+                .orElseGet(() -> criarUnidade(request));
     }
 
-    private UnidadeEntity criarUnidade(UnidadeRequestDTO unidadeRequest) {
-        return unidadeRepository.save(new UnidadeEntity(unidadeRequest.unidadeId(), unidadeRequest.nome()));
+    private UnidadeEntity criarUnidade(AvaliadorRequestDTO request) {
+        return unidadeRepository.save(new UnidadeEntity(request.unidade().unidadeId(), request.unidade().nome()));
     }
 }

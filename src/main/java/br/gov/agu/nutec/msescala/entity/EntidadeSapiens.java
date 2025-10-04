@@ -28,18 +28,10 @@ public abstract class EntidadeSapiens {
     @JoinColumn(name = "setor_id")
     private SetorEntity setor;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "unidade_id")
-    private UnidadeEntity unidade;
-
     private LocalDateTime criadoEm;
 
-    // Conveniências para manter compatibilidade com código que lê os IDs
     public Long getSetorId() {
-        return setor != null ? setor.getSetorId() : null;
+        return setor.getSetorId();
     }
 
-    public Long getUnidadeId() {
-        return unidade != null ? unidade.getUnidadeId() : null;
-    }
 }

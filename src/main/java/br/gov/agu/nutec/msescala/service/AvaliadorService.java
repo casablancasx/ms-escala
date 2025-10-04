@@ -43,12 +43,10 @@ public class AvaliadorService {
         UsuarioEntity user = usuarioRepository.findBySapiensId(decoded.sapiensId())
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
 
-        UnidadeEntity unidade = unidadeService.buscarUnidade(request.unidade());
-        SetorEntity setor = setorService.buscarSetor(request.setor(), unidade);
+        SetorEntity setor = setorService.buscarSetor(request);
 
         AvaliadorEntity avaliador = avaliadorMapper.mapToEntity(request);
         avaliador.setAdicionadoPor(user);
-        avaliador.setUnidade(unidade);
         avaliador.setSetor(setor);
         avaliadorRepository.save(avaliador);
         return avaliadorMapper.mapToResponseDTO(avaliador);

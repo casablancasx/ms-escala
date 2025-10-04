@@ -1,29 +1,32 @@
 package br.gov.agu.nutec.msescala.service;
 
+import br.gov.agu.nutec.msescala.dto.request.AvaliadorRequestDTO;
 import br.gov.agu.nutec.msescala.dto.request.SetoRequestDTO;
 import br.gov.agu.nutec.msescala.entity.SetorEntity;
 import br.gov.agu.nutec.msescala.entity.UnidadeEntity;
 import br.gov.agu.nutec.msescala.repository.SetorRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class SetorService {
 
 
     private final SetorRepository setorRepository;
+    private final UnidadeService unidadeService;
 
-    public SetorService(SetorRepository setorRepository) {
-        this.setorRepository = setorRepository;
-    }
 
-    public SetorEntity buscarSetor(SetoRequestDTO setoRequest, UnidadeEntity unidade) {
-        return setorRepository.findById(setoRequest.setorId()).orElseGet(
-                () -> criarSetor(setoRequest, unidade)
+
+    public SetorEntity buscarSetor(AvaliadorRequestDTO request) {
+        return setorRepository.findById(request.setor().setorId()).orElseGet(
+                () -> criarSetor(request)
         );
     }
 
 
-    private SetorEntity criarSetor(SetoRequestDTO setoRequest, UnidadeEntity unidade) {
-        return new SetorEntity(setoRequest.setorId(), setoRequest.nome(), unidade);
+    private SetorEntity criarSetor(AvaliadorRequestDTO request) {
+        var unidade = unidadeService.buscarUnidade(request);
+        return new SetorEntity(request.setor().setorId(), request.setor().nome(), unidade);
     }
 }
