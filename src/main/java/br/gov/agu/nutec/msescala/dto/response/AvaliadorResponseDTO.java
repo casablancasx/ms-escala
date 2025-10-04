@@ -12,9 +12,9 @@ public record AvaliadorResponseDTO(
         String telefone,
         @JsonProperty(value = "email")
         String email,
-        @JsonProperty(value = "setor_id")
+        @JsonProperty(value = "setor")
         String setor,
-        @JsonProperty(value = "unidade_id")
+        @JsonProperty(value = "unidade")
         String unidade,
         @JsonProperty(value = "sapiens_id")
         Long sapiensId,

@@ -20,7 +20,7 @@ public class AvaliadorController {
         this.avaliadorService = avaliadorService;
     }
 
-    @PostMapping("/cadastrar")
+    @PostMapping
     public ResponseEntity<AvaliadorResponseDTO> cadastrarAvaliador(@RequestBody @Valid AvaliadorRequestDTO request, @RequestHeader("Authorization") String token) {
         var response = avaliadorService.cadastrarAvaliador(request, token);
         return ResponseEntity.ok(response);

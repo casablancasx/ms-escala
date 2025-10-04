@@ -15,7 +15,6 @@ public interface AvaliadorMapper {
     @Mapping(target = "afastamentos", ignore = true)
     @Mapping(target = "escalas", ignore = true)
     @Mapping(target = "setor", ignore = true)
-    @Mapping(target = "unidade", ignore = true)
     @Mapping(target = "quantidadeAudiencias", constant = "0")
     @Mapping(target = "quantidadePautas", constant = "0")
     @Mapping(target = "criadoEm", expression = "java(java.time.LocalDateTime.now())")
@@ -24,7 +23,7 @@ public interface AvaliadorMapper {
 
     @Mapping(target = "adicionadoPor", source = "adicionadoPor.nome")
     @Mapping(target = "setor", source = "setor.nome")
-    @Mapping(target = "unidade", source = "unidade.nome")
+    @Mapping(target = "unidade", source = "setor.unidade.nome")
     @Mapping(target = "score", expression = "java(entity.calcularCargaTrabalho())")
     AvaliadorResponseDTO mapToResponseDTO(AvaliadorEntity entity);
 
