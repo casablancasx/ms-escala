@@ -24,6 +24,7 @@ public interface AvaliadorMapper {
 
     @Mapping(target = "adicionadoPor", source = "adicionadoPor.nome")
     @Mapping(target = "setor", source = "setor.nome")
+    @Mapping(target = "id", source = "sapiensId")
     @Mapping(target = "unidade", source = "setor.unidade.nome")
     @Mapping(target = "score", expression = "java(entity.calcularCargaTrabalho())")
     AvaliadorResponseDTO mapToResponseDTO(AvaliadorEntity entity);

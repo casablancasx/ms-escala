@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record AvaliadorResponseDTO(
 
-        @JsonProperty(value = "avaliador_id")
-        Long avaliadorId,
+        Long id,
         @JsonProperty(value = "nome")
         String nome,
         @JsonProperty(value = "telefone")
@@ -16,8 +15,6 @@ public record AvaliadorResponseDTO(
         String setor,
         @JsonProperty(value = "unidade")
         String unidade,
-        @JsonProperty(value = "sapiens_id")
-        Long sapiensId,
         @JsonProperty(value = "quantidadeAudiencias")
         Integer quantidadeAudiencias,
         @JsonProperty(value = "quantidadePautas")
