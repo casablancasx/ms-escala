@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 @RestController
 @RequestMapping("/avaliador")
 public class AvaliadorController {
@@ -23,7 +25,7 @@ public class AvaliadorController {
     @PostMapping
     public ResponseEntity<AvaliadorResponseDTO> cadastrarAvaliador(@RequestBody @Valid AvaliadorRequestDTO request, @RequestHeader("Authorization") String token) {
         var response = avaliadorService.cadastrarAvaliador(request, token);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.created(URI.create("/avaliador/" + response.avaliadorId())).body(response);
     }
 
     @GetMapping
