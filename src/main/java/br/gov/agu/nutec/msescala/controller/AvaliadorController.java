@@ -40,14 +40,14 @@ public class AvaliadorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AvaliadorResponseDTO> atualizarAvaliador(@PathVariable Integer id, @RequestBody @Valid AvaliadorRequestDTO request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<AvaliadorResponseDTO> atualizarAvaliador(@PathVariable Long id, @RequestBody @Valid AvaliadorRequestDTO request, @RequestHeader("Authorization") String token) {
         var response = avaliadorService.atualizarAvaliador(id, request, token);
         return ResponseEntity.ok(response);
     }
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarAvaliador(@PathVariable Integer id) {
+    public ResponseEntity<Void> deletarAvaliador(@PathVariable Long id) {
         avaliadorService.deletarAvaliador(id);
         return ResponseEntity.noContent().build();
     }

@@ -77,7 +77,7 @@ public class AvaliadorService {
         );
     }
 
-    public AvaliadorResponseDTO atualizarAvaliador(Integer id, @Valid AvaliadorRequestDTO request, String token) {
+    public AvaliadorResponseDTO atualizarAvaliador(Long id, @Valid AvaliadorRequestDTO request, String token) {
         AvaliadorEntity avaliadorExistente = avaliadorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Avaliador não encontrado com ID: " + id));
 
@@ -90,7 +90,7 @@ public class AvaliadorService {
         return avaliadorMapper.mapToResponseDTO(avaliadorExistente);
     }
 
-    public void deletarAvaliador(Integer id) {
+    public void deletarAvaliador(Long id) {
         avaliadorRepository.deleteById(id);
     }
 }

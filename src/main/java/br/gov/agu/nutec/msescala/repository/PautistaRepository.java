@@ -10,14 +10,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface PautistaRepository extends JpaRepository<PautistaEntity, Integer> {
+public interface PautistaRepository extends JpaRepository<PautistaEntity, Long> {
 
 
         @Query(value = """
             SELECT p FROM PautistaEntity p
             WHERE p.disponivel = true
-            AND p.pautistaId NOT IN (
-                SELECT e.pautista.pautistaId FROM EscalaEntity e
+            AND p.sapiensId NOT IN (
+                SELECT e.pautista.sapiensId FROM EscalaEntity e
                 JOIN e.pauta pa
                 WHERE pa.data = :data
             )
