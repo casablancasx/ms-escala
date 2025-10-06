@@ -1,9 +1,6 @@
 package br.gov.agu.nutec.msescala.entity;
 
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +15,8 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public abstract class EntidadeSapiens {
 
+    @Id
+    @Column(name = "sapiens_id")
     private Long sapiensId;
 
     private String nome;

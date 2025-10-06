@@ -29,11 +29,6 @@ import java.util.List;
 @AllArgsConstructor
 public class PautistaEntity extends EntidadeSapiens {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "pautista_id")
-    private Integer pautistaId;
-
     private String telefone;
 
     private Integer quantidadePautas;

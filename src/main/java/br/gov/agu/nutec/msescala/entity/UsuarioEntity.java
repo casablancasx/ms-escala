@@ -17,10 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 public class UsuarioEntity extends EntidadeSapiens {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer usuarioId;
-
     private String cpf;
 
     @OneToMany(mappedBy = "adicionadoPor")

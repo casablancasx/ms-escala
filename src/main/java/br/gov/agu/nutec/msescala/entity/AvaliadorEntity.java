@@ -17,10 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 public class AvaliadorEntity extends EntidadeSapiens{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer avaliadorId;
-
     private String telefone;
 
     private Integer quantidadePautas = 0;

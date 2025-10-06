@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface AvaliadorRepository extends JpaRepository<AvaliadorEntity, Integer> {
+public interface AvaliadorRepository extends JpaRepository<AvaliadorEntity, Long> {
 
     Page<AvaliadorEntity> findByNomeContainingIgnoreCase(String nome, Pageable pageable);
 
