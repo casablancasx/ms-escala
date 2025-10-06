@@ -6,7 +6,6 @@ import br.gov.agu.nutec.msescala.dto.response.AvaliadorResponseDTO;
 import br.gov.agu.nutec.msescala.dto.response.PageResponse;
 import br.gov.agu.nutec.msescala.entity.AvaliadorEntity;
 import br.gov.agu.nutec.msescala.entity.SetorEntity;
-import br.gov.agu.nutec.msescala.entity.UnidadeEntity;
 import br.gov.agu.nutec.msescala.entity.UsuarioEntity;
 import br.gov.agu.nutec.msescala.exceptions.ResourceNotFoundException;
 import br.gov.agu.nutec.msescala.mapper.AvaliadorMapper;
@@ -52,6 +51,7 @@ public class AvaliadorService {
         return avaliadorMapper.mapToResponseDTO(avaliador);
     }
 
+    @Transactional(readOnly = true)
     public PageResponse<AvaliadorResponseDTO> listarAvaliadores(int page, int size, String nome, String sort, String token) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
@@ -77,6 +77,7 @@ public class AvaliadorService {
         );
     }
 
+    @Transactional
     public AvaliadorResponseDTO atualizarAvaliador(Long id, @Valid AvaliadorRequestDTO request, String token) {
         AvaliadorEntity avaliadorExistente = avaliadorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Avaliador não encontrado com ID: " + id));
