@@ -27,8 +27,6 @@ public class AudienciaEntity {
 
     private String nomeParte;
 
-    private String prioridade;
-
     @ManyToOne
     @JoinColumn(name = "pauta_id")
     private PautaEntity pauta;

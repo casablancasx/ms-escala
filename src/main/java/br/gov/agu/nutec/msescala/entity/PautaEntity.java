@@ -27,6 +27,7 @@ public class PautaEntity {
 
     private LocalDate data;
 
+    @Enumerated(EnumType.STRING)
     private Turno turno;
 
     @Column(name = "status_escala_avaliador")
