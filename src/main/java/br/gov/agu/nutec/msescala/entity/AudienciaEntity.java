@@ -21,10 +21,6 @@ public class AudienciaEntity {
 
     private String numeroProcesso;
 
-    private String classeJudicial;
-
-    private String assunto;
-
     private String nomeParte;
 
     @ManyToOne
