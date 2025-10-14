@@ -62,9 +62,12 @@ public class EscalaService {
     }
 
     private void escalarAvaliadorNaPauta(final AvaliadorEntity avaliador, final PautaEntity pauta) {
-        EscalaEntity escala = new EscalaEntity();
+        EscalaEntity escala = escalaRepository.findByPauta_PautaId(pauta.getPautaId());
+        if (escala == null) {
+            escala = new EscalaEntity();
+            escala.setPauta(pauta);
+        }
         escala.setAvaliador(avaliador);
-        escala.setPauta(pauta);
         escala.setCriadoEm(LocalDateTime.now());
         escalaRepository.save(escala);
 
@@ -113,8 +116,11 @@ public class EscalaService {
 
     private void escalarPautistaNaPauta(final PautistaEntity pautista, final PautaEntity pauta) {
         EscalaEntity escala = escalaRepository.findByPauta_PautaId(pauta.getPautaId());
+        if (escala == null) {
+            escala = new EscalaEntity();
+            escala.setPauta(pauta);
+        }
         escala.setPautista(pautista);
-        escala.setPauta(pauta);
         escala.setCriadoEm(LocalDateTime.now());
         escalaRepository.save(escala);
 
