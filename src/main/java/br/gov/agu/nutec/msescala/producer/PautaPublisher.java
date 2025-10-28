@@ -34,16 +34,16 @@ public class PautaPublisher {
         List<PautaEntity> pautas = new ArrayList<>();
 
 
-        if (request.uf() != null && request.orgaoJulgadorIds().isEmpty()) {
+        if (!request.ufIds().isEmpty() && request.orgaoJulgadorIds().isEmpty()) {
 
             pautas = pautaRepository.buscarPautasSemAvaliadoresEscaladosPorUf(
                     request.dataInicio(),
                     request.dataFim(),
-                    request.uf());
+                    request.ufIds());
 
         }
 
-        if (request.orgaoJulgadorIds().isEmpty() && request.uf() == null) {
+        if (request.orgaoJulgadorIds().isEmpty() && request.ufIds().isEmpty()) {
             pautas = pautaRepository.buscarPautasSemAvaliadoresEscaladosPorPeriodo(
                     request.dataInicio(),
                     request.dataFim()
@@ -71,14 +71,14 @@ public class PautaPublisher {
 
         List<PautaEntity> pautas = new ArrayList<>();
 
-        if (request.uf() != null && request.orgaoJulgadorIds().isEmpty()) {
+        if (!request.ufIds().isEmpty() && request.orgaoJulgadorIds().isEmpty()) {
             pautas = pautaRepository.buscarPautasSemPautistasEscaladosPorUf(
                     request.dataInicio(),
                     request.dataFim(),
-                    request.uf());
+                    request.ufIds());
         }
 
-        if (request.orgaoJulgadorIds().isEmpty() && request.uf() == null) {
+        if (request.orgaoJulgadorIds().isEmpty() && request.ufIds().isEmpty()) {
             pautas = pautaRepository.buscarPautasSemPautistasEscaladosPorPeriodo(
                     request.dataInicio(),
                     request.dataFim()

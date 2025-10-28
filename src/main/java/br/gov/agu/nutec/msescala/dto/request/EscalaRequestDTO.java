@@ -1,7 +1,5 @@
 package br.gov.agu.nutec.msescala.dto.request;
 
-import br.gov.agu.nutec.msescala.enums.Uf;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -10,7 +8,7 @@ public record EscalaRequestDTO(
         Integer especieTarefaId,
         LocalDate dataInicio,
         LocalDate dataFim,
-        Uf uf,
+        List<Integer> ufIds,
         List<Long> orgaoJulgadorIds,
         List<Long> avaliadorIds,
         List<Long> pautistaIds
