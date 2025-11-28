@@ -27,6 +27,6 @@ public class SetorService {
 
     private SetorEntity criarSetor(AvaliadorRequestDTO request) {
         var unidade = unidadeService.buscarUnidade(request);
-        return new SetorEntity(request.setor().setorId(), request.setor().nome(), unidade);
+        return setorRepository.save(new SetorEntity(request.setor().setorId(), request.setor().nome(), unidade));
     }
 }

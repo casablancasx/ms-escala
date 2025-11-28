@@ -5,8 +5,8 @@ import jakarta.validation.constraints.NotNull;
 
 public record UnidadeRequestDTO(
         @NotNull(message = "O ID da unidade não pode ser nulo")
-        Long unidadeId,
+        Long unidadeId, // NAO PODE SER ALTERADO PELO USUARIO
         @NotBlank(message = "O nome da unidade não pode ser vazio")
-        String nome
+        String nome // NAO PODE SER ALTERADO PELO USUARIO
 ) {
 }

@@ -9,7 +9,7 @@ public record AvaliadorRequestDTO(
         String email,
         String telefone,
         boolean disponivel,
-        Long sapiensId,
+        Long sapiensId, // Não pode ser alterado pelo usuario
         SetoRequestDTO setor,
         UnidadeRequestDTO unidade
 ) {
