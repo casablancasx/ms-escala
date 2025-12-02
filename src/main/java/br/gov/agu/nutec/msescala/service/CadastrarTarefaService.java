@@ -2,10 +2,9 @@ package br.gov.agu.nutec.msescala.service;
 
 import br.gov.agu.nutec.msescala.dto.message.PautaMessage;
 import br.gov.agu.nutec.msescala.entity.*;
-import br.gov.agu.nutec.msescala.enums.StatusCadastro;
+import br.gov.agu.nutec.msescala.enums.StatusCadastroTarefa;
 import br.gov.agu.nutec.msescala.repository.AudienciaRepository;
 import com.fasterxml.jackson.databind.JsonNode;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +18,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
-import static br.gov.agu.nutec.msescala.enums.StatusCadastro.ERRO;
-import static br.gov.agu.nutec.msescala.enums.StatusCadastro.SUCESSO;
+import static br.gov.agu.nutec.msescala.enums.StatusCadastroTarefa.ERRO;
+import static br.gov.agu.nutec.msescala.enums.StatusCadastroTarefa.SUCESSO;
 
 @Service
 @RequiredArgsConstructor
@@ -33,8 +32,8 @@ public class CadastrarTarefaService {
 
     public void cadastrarTarefaSapiens(AudienciaEntity audiencia, PautaEntity pauta, EntidadeSapiens entidadeSapiens, PautaMessage pautaMessage) {
         Integer processoId = buscarProcessoIdPorAudiencia(audiencia.getNumeroProcesso(), pautaMessage.token());
-        var statusCodeCadastro = cadastrarAudienciaParaUsuarioSapiens(processoId,pautaMessage.setorOrigemId(),pautaMessage.especieTarefaId(), entidadeSapiens,pauta, pautaMessage.token());
-        StatusCadastro  statusCadastro = (processoId == null || !statusCodeCadastro.is2xxSuccessful()) ? ERRO : SUCESSO;
+        var statusCodeCadastro = cadastrarAudienciaParaUsuarioSapiens(processoId,pautaMessage.setorOrigemId(),pautaMessage.especieTarefaId(), entidadeSapiens,pauta,audiencia ,pautaMessage.token());
+        StatusCadastroTarefa statusCadastro = (processoId == null || !statusCodeCadastro.is2xxSuccessful()) ? ERRO : SUCESSO;
         atualizarStatus(audiencia, entidadeSapiens, statusCadastro);
         audienciaRepository.save(audiencia);
     }
@@ -79,12 +78,18 @@ public class CadastrarTarefaService {
             Integer especieTarefaId,
             EntidadeSapiens entidadeSapiens,
             PautaEntity pauta,
+            AudienciaEntity audiencia,
             String token
     ) {
         Map<String, Object> body = new HashMap<>();
         body.put("postIt", null);
         body.put("urgente", null);
-        body.put("observacao", String.format("%s - %s", pauta.getData().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")), pauta.getOrgaoJulgador().getNome()));        body.put("localEvento", null);
+        body.put("observacao", String.format("%s - %s - %s - %s",
+                audiencia.getTipoContestacao() != null ? audiencia.getTipoContestacao() : "N/A",
+                pauta.getData() != null ? pauta.getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "N/A",
+                pauta.getOrgaoJulgador() != null ? pauta.getOrgaoJulgador().getNome() : "N/A",
+                pauta.getTurno().getDescricao() != null ? pauta.getTurno() : "N/A"));
+        body.put("localEvento", null);
         body.put("dataHoraInicioPrazo", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         body.put("dataHoraFinalPrazo", pauta.getData().atTime(20, 0, 0).format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME));        body.put("dataHoraLeitura", null);
         body.put("dataHoraDistribuicao", null);
@@ -131,14 +136,14 @@ public class CadastrarTarefaService {
         return processoId;
     }
 
-    private void atualizarStatus(AudienciaEntity audienciaEntity, EntidadeSapiens entidade, StatusCadastro statusCadastro) {
+    private void atualizarStatus(AudienciaEntity audienciaEntity, EntidadeSapiens entidade, StatusCadastroTarefa statusCadastro) {
 
         if (entidade instanceof PautistaEntity){
-            audienciaEntity.setStatusCadastroPautista(statusCadastro);
+            audienciaEntity.setStatusCadastroTarefaPautista(statusCadastro);
         }
 
         if (entidade instanceof AvaliadorEntity){
-            audienciaEntity.setStatusCadastroAvaliador(statusCadastro);
+            audienciaEntity.setStatusCadastroTarefaAvaliador(statusCadastro);
         }
     }
 }

@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/escalar")
 @RequiredArgsConstructor
@@ -16,14 +18,14 @@ public class EscalaController {
 
 
     @PostMapping("/avaliadores")
-    public ResponseEntity<?> escalarAvaliadores(@RequestBody EscalaRequestDTO escalaRequestDTO,@RequestHeader("Authorization") String token) {
+    public ResponseEntity<Map<String,String>> escalarAvaliadores(@RequestBody EscalaRequestDTO escalaRequestDTO, @RequestHeader("Authorization") String token) {
         pautaPublisher.iniciarEscalaAvaliadores(escalaRequestDTO, token.replace("Bearer ", ""));
-        return ResponseEntity.ok("Avaliadores escalados com sucesso!");
+        return ResponseEntity.ok(Map.of("message","Processo de escala de avaliadores iniciado. A conclusão pode levar alguns minutos."));
     }
 
-    @PostMapping("/pautistas")
-    public ResponseEntity<?> escalarPautistas(@RequestBody EscalaRequestDTO escalaRequestDTO,@RequestHeader("Authorization") String token) {
-        pautaPublisher.iniciarEscalaPautistas(escalaRequestDTO, token.replace("Bearer ", ""));
-        return ResponseEntity.ok("Pautistas escalados com sucesso!");
-    }
+//    @PostMapping("/pautistas")
+//    public ResponseEntity<?> escalarPautistas(@RequestBody EscalaRequestDTO escalaRequestDTO,@RequestHeader("Authorization") String token) {
+//        pautaPublisher.iniciarEscalaPautistas(escalaRequestDTO, token.replace("Bearer ", ""));
+//        return ResponseEntity.ok("Pautistas escalados com sucesso!");
+//    }
 }

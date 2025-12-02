@@ -1,6 +1,7 @@
 package br.gov.agu.nutec.msescala.repository;
 
 import br.gov.agu.nutec.msescala.entity.PautaEntity;
+import br.gov.agu.nutec.msescala.enums.TipoContestacao;
 import br.gov.agu.nutec.msescala.enums.Uf;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,52 +14,17 @@ import java.util.List;
 @Repository
 public interface PautaRepository extends JpaRepository<PautaEntity, Long> {
 
-    @Query("SELECT p FROM PautaEntity p WHERE " +
-            "p.data BETWEEN :dataInicio AND :dataFim AND " +
-            "p.orgaoJulgador.orgaoJulgadorId IN :ufs AND " +
-            "NOT EXISTS (SELECT e FROM EscalaEntity e WHERE e.pauta = p AND e.avaliador IS NOT NULL)")
-    List<PautaEntity> buscarPautasSemAvaliadoresEscaladosPorUf(
+    @Query("SELECT DISTINCT p FROM PautaEntity p " +
+            "LEFT JOIN p.audiencias a " +
+            "WHERE p.data BETWEEN :dataInicio AND :dataFim " +
+            "AND (:ufs IS NULL OR p.orgaoJulgador.uf.sigla IN :ufs) " +
+            "AND (:orgaoJulgadorIds IS NULL OR p.orgaoJulgador.orgaoJulgadorId IN :orgaoJulgadorIds) " +
+            "AND (:tiposContestacao IS NULL OR a.tipoContestacao IN :tiposContestacao) " +
+            "AND NOT EXISTS (SELECT e FROM EscalaEntity e WHERE e.pauta = p AND e.avaliador IS NOT NULL)")
+    List<PautaEntity> buscarPautasSemAvaliadoresEscalados(
             @Param("dataInicio") LocalDate dataInicio,
             @Param("dataFim") LocalDate dataFim,
-            @Param("ufs") List<Integer> ufIds);
-
-
-    @Query("SELECT p FROM PautaEntity p WHERE " +
-            "p.data BETWEEN :dataInicio AND :dataFim AND " +
-            "p.orgaoJulgador.uf.ufId IN :ufs AND " +
-            "p.statusAnaliseComparecimento = br.gov.agu.nutec.msescala.enums.StatusAnaliseComparecimento.COMPARECER AND " +
-            "NOT EXISTS (SELECT e FROM EscalaEntity e WHERE e.pauta = p AND e.pautista IS NOT NULL)")
-    List<PautaEntity> buscarPautasSemPautistasEscaladosPorUf(
-            @Param("dataInicio") LocalDate dataInicio,
-            @Param("dataFim") LocalDate dataFim,
-            @Param("ufs") List<Integer> ufIds);
-
-    @Query("SELECT p FROM PautaEntity p WHERE " +
-            "p.data BETWEEN :dataInicio AND :dataFim AND " +
-            "NOT EXISTS (SELECT e FROM EscalaEntity e WHERE e.pauta = p AND e.avaliador IS NOT NULL)")
-    List<PautaEntity> buscarPautasSemAvaliadoresEscaladosPorPeriodo(LocalDate localDate, LocalDate localDate1);
-
-    @Query("SELECT p FROM PautaEntity p WHERE " +
-            "p.data BETWEEN :dataInicio AND :dataFim AND " +
-            "p.orgaoJulgador.orgaoJulgadorId IN :orgaoJulgadorIds AND " +
-            "NOT EXISTS (SELECT e FROM EscalaEntity e WHERE e.pauta = p AND e.avaliador IS NOT NULL)")
-    List<PautaEntity> buscarPautasSemAvaliadoresEscaladosPorOrgaoJulgador(LocalDate localDate, LocalDate localDate1, List<Long> longs);
-    
-    @Query("SELECT p FROM PautaEntity p WHERE " +
-            "p.data BETWEEN :dataInicio AND :dataFim AND " +
-            "p.statusAnaliseComparecimento = br.gov.agu.nutec.msescala.enums.StatusAnaliseComparecimento.COMPARECER AND " +
-            "NOT EXISTS (SELECT e FROM EscalaEntity e WHERE e.pauta = p AND e.pautista IS NOT NULL)")
-    List<PautaEntity> buscarPautasSemPautistasEscaladosPorPeriodo(
-            @Param("dataInicio") LocalDate dataInicio, 
-            @Param("dataFim") LocalDate dataFim);
-    
-    @Query("SELECT p FROM PautaEntity p WHERE " +
-            "p.data BETWEEN :dataInicio AND :dataFim AND " +
-            "p.orgaoJulgador.orgaoJulgadorId IN :orgaoJulgadorIds AND " +
-            "p.statusAnaliseComparecimento = br.gov.agu.nutec.msescala.enums.StatusAnaliseComparecimento.COMPARECER AND " +
-            "NOT EXISTS (SELECT e FROM EscalaEntity e WHERE e.pauta = p AND e.pautista IS NOT NULL)")
-    List<PautaEntity> buscarPautasSemPautistasEscaladosPorOrgaoJulgador(
-            @Param("dataInicio") LocalDate dataInicio, 
-            @Param("dataFim") LocalDate dataFim, 
-            @Param("orgaoJulgadorIds") List<Long> orgaoJulgadorIds);
+            @Param("ufs") List<Uf> ufs,
+            @Param("orgaoJulgadorIds") List<Long> orgaoJulgadorIds,
+            @Param("tiposContestacao") List<TipoContestacao> tiposContestacao);
 }

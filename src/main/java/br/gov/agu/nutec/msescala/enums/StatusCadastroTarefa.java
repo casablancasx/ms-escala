@@ -1,7 +1,9 @@
 package br.gov.agu.nutec.msescala.enums;
 
-public enum StatusCadastro {
+public enum StatusCadastroTarefa {
     PENDENTE,
     SUCESSO,
     ERRO
 }
+
+

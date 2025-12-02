@@ -31,70 +31,21 @@ public class PautaPublisher {
 
     public void iniciarEscalaAvaliadores(EscalaRequestDTO request, String token) {
 
-        List<PautaEntity> pautas = new ArrayList<>();
-
-
-        if (!request.ufIds().isEmpty() && request.orgaoJulgadorIds().isEmpty()) {
-
-            pautas = pautaRepository.buscarPautasSemAvaliadoresEscaladosPorUf(
-                    request.dataInicio(),
-                    request.dataFim(),
-                    request.ufIds());
-
-        }
-
-        if (request.orgaoJulgadorIds().isEmpty() && request.ufIds().isEmpty()) {
-            pautas = pautaRepository.buscarPautasSemAvaliadoresEscaladosPorPeriodo(
-                    request.dataInicio(),
-                    request.dataFim()
-            );
-        }
-
-        if (!request.orgaoJulgadorIds().isEmpty()) {
-            pautas = pautaRepository.buscarPautasSemAvaliadoresEscaladosPorOrgaoJulgador(
-                    request.dataInicio(),
-                    request.dataFim(),
-                    request.orgaoJulgadorIds()
-            );
-
-            pautas.parallelStream().forEach(pauta -> {
-                rabbitTemplate.convertAndSend(
-                        exchange,
-                        bindingKeyAvaliador,
-                        new PautaMessage("Pauta para escala de avaliador", pauta.getPautaId(), request.setorOrigemId(), request.especieTarefaId(), request.avaliadorIds(), request.pautistaIds(), token));
-            });
-        }
-
-    }
-
-    public void iniciarEscalaPautistas(EscalaRequestDTO request, String token) {
-
-        List<PautaEntity> pautas = new ArrayList<>();
-
-        if (!request.ufIds().isEmpty() && request.orgaoJulgadorIds().isEmpty()) {
-            pautas = pautaRepository.buscarPautasSemPautistasEscaladosPorUf(
-                    request.dataInicio(),
-                    request.dataFim(),
-                    request.ufIds());
-        }
-
-        if (request.orgaoJulgadorIds().isEmpty() && request.ufIds().isEmpty()) {
-            pautas = pautaRepository.buscarPautasSemPautistasEscaladosPorPeriodo(
-                    request.dataInicio(),
-                    request.dataFim()
-            );
-        }
-
-        if (!request.orgaoJulgadorIds().isEmpty()) {
-            pautas = pautaRepository.buscarPautasSemPautistasEscaladosPorOrgaoJulgador(
-                    request.dataInicio(),
-                    request.dataFim(),
-                    request.orgaoJulgadorIds()
-            );
-        }
+        List<PautaEntity> pautas = pautaRepository.buscarPautasSemAvaliadoresEscalados(
+                request.dataInicio(),
+                request.dataFim(),
+                request.ufs().isEmpty() ? null : request.ufs(),
+                request.orgaoJulgadorIds().isEmpty() ? null : request.orgaoJulgadorIds(),
+                request.tipoContestacao().isEmpty() ? null : request.tipoContestacao()
+        );
 
         pautas.parallelStream().forEach(pauta -> {
-            rabbitTemplate.convertAndSend(exchange, bindingKeyPautista, new PautaMessage("Pauta para escala de pautista", pauta.getPautaId(), request.setorOrigemId(), request.especieTarefaId(),request.avaliadorIds(),request.pautistaIds(), token));
+            rabbitTemplate.convertAndSend(
+                    exchange,
+                    bindingKeyAvaliador,
+                    new PautaMessage("Pauta para escala de avaliador", pauta.getPautaId(), request.setorOrigemId(), request.especieTarefaId(), request.avaliadorIds(), request.pautistaIds(), token));
         });
+
     }
+
 }
